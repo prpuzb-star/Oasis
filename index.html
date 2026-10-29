@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oasis</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Oasis">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#8b5cf6">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+:root{--t:#1c1c1e;--s:rgba(60,60,67,.6);--g:rgba(255,255,255,.34);--gb:rgba(255,255,255,.6);--me:linear-gradient(135deg,rgba(255,94,98,.85),rgba(139,92,246,.85));--b1:#ffd1dc;--b2:#c9b8ff;--b3:#a5e3ff;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--t:#f5f5f7;--s:rgba(235,235,245,.6);--g:rgba(40,40,60,.42);--gb:rgba(255,255,255,.18);--b1:#4a1d4f;--b2:#1d2a5c;--b3:#0b3b4a;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:linear-gradient(160deg,var(--b1),var(--b2) 55%,var(--b3));color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column;overflow:hidden;position:relative;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.orb{position:fixed;border-radius:50%;filter:blur(60px);opacity:.7;z-index:0;pointer-events:none}
+.o1{width:300px;height:300px;background:#ff7eb3;top:-80px;left:-80px}.o2{width:280px;height:280px;background:#7aa2ff;bottom:60px;right:-90px}.o3{width:220px;height:220px;background:#7af0d0;top:40%;left:30%;opacity:.45}
+.glass{background:var(--g);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border:1px solid var(--gb);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 10px 30px rgba(0,0,0,.12)}
+.hide{display:none!important}
+#login{position:relative;z-index:3;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.card{width:100%;max-width:360px;padding:28px 22px;border-radius:32px;text-align:center}
+.card .logo{width:84px;height:84px;margin-bottom:10px}
+.card h1{margin:0 0 4px;font-size:30px}.card p{margin:0 0 18px;color:var(--s);font-size:14px}
+.card input{width:100%;margin-bottom:10px;padding:14px 16px;border-radius:18px;border:1px solid var(--gb);background:var(--g);color:var(--t);font:inherit;font-size:16px;outline:0}
+.card input::placeholder{color:var(--s)}
+.card button{width:100%;padding:14px;border:0;border-radius:18px;background:var(--me);color:#fff;font:inherit;font-size:16px;font-weight:600;cursor:pointer;transition:transform .18s cubic-bezier(.3,1.5,.5,1)}
+.card button:active{transform:scale(.96)}
+#err{color:#ff453a;font-size:13px;min-height:18px;margin-top:10px}
+#app{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;min-height:0}
+header{position:relative;z-index:2;margin:10px 12px 0;padding:10px 14px;border-radius:26px;display:flex;align-items:center;gap:10px}
+.logo{width:44px;height:44px;flex:none}
+header .nm{flex:1;min-width:0}header b{display:block;font-size:19px}header small{color:var(--s);font-size:12px}
+.ib{width:42px;height:42px;border-radius:50%;border:1px solid var(--gb);background:var(--g);color:var(--t);font-size:19px;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);flex:none}
+.ib:disabled{opacity:.4}
+#list{flex:1;overflow-y:auto;padding:14px 14px 8px;display:flex;flex-direction:column;gap:6px}
+.m{max-width:80%;padding:8px 12px 6px;border-radius:20px;align-self:flex-start;overflow-wrap:anywhere}
+.m.me{align-self:flex-end;background:var(--me);color:#fff;border-color:rgba(255,255,255,.4)}
+.m.me .ts{color:rgba(255,255,255,.8)}
+.t{white-space:pre-wrap;font-size:16px;line-height:1.3}
+.m img,.m video{display:block;max-width:100%;max-height:300px;min-width:120px;min-height:80px;border-radius:14px;margin-bottom:4px}
+.ts{font-size:11px;color:var(--s);text-align:right;margin-top:2px}
+.empty{margin:auto;text-align:center;color:var(--s);font-size:15px;padding:20px}
+@keyframes pop{0%{opacity:0;transform:translateY(28px) scale(.55)}60%{opacity:1;transform:translateY(-3px) scale(1.04)}100%{opacity:1;transform:none}}
+.m.new{animation:pop .5s cubic-bezier(.22,1.2,.36,1) both;transform-origin:0 100%}.m.me.new{transform-origin:100% 100%}
+.send,.ib,.cb{transition:transform .18s cubic-bezier(.3,1.5,.5,1),opacity .2s}
+.send:active,.ib:active,.cb:active{transform:scale(.88)}
+.bar{position:relative;z-index:2;margin:6px 12px 10px;padding:6px;border-radius:28px;display:flex;gap:6px;align-items:flex-end}
+textarea{flex:1;border:0;background:transparent;padding:11px 8px;font:inherit;font-size:16px;color:var(--t);resize:none;max-height:120px;outline:0}
+textarea::placeholder{color:var(--s)}
+.send{width:42px;height:42px;border:0;border-radius:50%;background:var(--me);color:#fff;font-size:18px;cursor:pointer;flex:none}
+#call{position:fixed;inset:0;z-index:10;background:#0b0b14;display:none;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+#call.on{display:flex}
+#rv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#lv{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:14px;width:100px;height:140px;object-fit:cover;border-radius:18px;border:1px solid rgba(255,255,255,.5);z-index:2;transform:scaleX(-1);background:#222}
+#info{position:relative;z-index:2;text-align:center;font-size:20px;text-shadow:0 2px 10px rgba(0,0,0,.5);padding:0 20px}
+#info small{display:block;font-size:14px;opacity:.85;margin-top:6px}
+#ctl{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);z-index:2;display:flex;gap:18px;padding:12px 18px;border-radius:40px}
+.cb{width:56px;height:56px;border-radius:50%;border:0;font-size:22px;cursor:pointer;color:#fff;background:rgba(255,255,255,.22);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.cb.red{background:#ff3b30}.cb.grn{background:#34c759}.cb.off{background:rgba(255,255,255,.7);color:#000}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5e62"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+<symbol id="lo" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="url(#lg)"/><path d="M32 13c-10.5 0-19 7.6-19 17 0 5 2.4 9.5 6.3 12.6L18 51l8.5-4.2c1.8.4 3.6.6 5.5.6 10.500 0 19-7.600 19-17S42.500 13 32 13z" fill="rgba(255,255,255,.28)" stroke="#fff" stroke-width="1.5"/><path d="M32 40.500s-9-5.400-9-11.600c0-3.200 2.500-5.200 4.900-5.200 1.800 0 3.300 1 4.100 2.600.8-1.600 2.300-2.600 4.100-2.600 2.400 0 4.900 2 4.900 5.200 0 6.200-9 11.600-9 11.600z" fill="#fff"/></symbol></defs></svg>
+
+<div id="login" class="hide">
+<div class="card glass">
+<svg class="logo"><use href="#lo"/></svg>
+<h1>Oasis</h1><p>Faqat ikkimiz uchun 💜</p>
+<input id="em" type="email" placeholder="Elektron pochta" autocomplete="username">
+<input id="pw" type="password" placeholder="Parol" autocomplete="current-password">
+<div id="show" style="cursor:pointer;color:var(--s);font-size:13px;margin:-2px 0 12px;text-align:left">👁 Parolni ko‘rsatish</div>
+<button id="go">Kirish</button>
+<div id="err"></div>
+</div>
+</div>
+
+<div id="app" class="hide">
+<header class="glass">
+<svg class="logo"><use href="#lo"/></svg>
+<div class="nm"><b>Oasis</b><small id="st">ulanmoqda…</small></div>
+<button class="ib" id="vc" title="Videoqo‘ng‘iroq" disabled>📹</button>
+<button class="ib" id="out" title="Chiqish">⏻</button>
+</header>
+<div id="list"></div>
+<div class="bar glass">
+<button class="ib" id="att" title="Rasm yoki video">＋</button>
+<input type="file" id="file" accept="image/*,video/*" hidden>
+<textarea id="in" rows="1" placeholder="Xabar yozing"></textarea>
+<button class="send" id="send" title="Yuborish">↑</button>
+</div>
+</div>
+
+<div id="call">
+<video id="rv" autoplay playsinline></video>
+<video id="lv" autoplay playsinline muted></video>
+<div id="info"><span id="who">Oasis</span><small id="cs"></small></div>
+<div id="ctl" class="glass">
+<button class="cb grn" id="acc" style="display:none">📞</button>
+<button class="cb" id="mic">🎙️</button>
+<button class="cb" id="cam">📷</button>
+<button class="cb red" id="end">✕</button>
+</div>
+</div>
+
+<script>
+const SB_URL='https://ilhxksrrfnxoomnaleyo.supabase.co';
+const SB_KEY='sb_publishable_BHVnn4xL-gpbRHYLWL7fkQ_sJFHcblM';
+if(typeof supabase==='undefined'){document.addEventListener('DOMContentLoaded',()=>{document.getElementById('login').classList.remove('hide');document.getElementById('err').textContent='Kutubxona yuklanmadi. Internetni tekshirib, sahifani yangilang.'})}
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const $=id=>document.getElementById(id);
+const list=$('list'),inp=$('in'),st=$('st');
+let me=null,seen=new Set(),urlCache={};
+
+/* ---------- kirish ---------- */
+async function boot(){
+  const {data}=await sb.auth.getSession();
+  if(data.session){start(data.session.user)}else{$('login').classList.remove('hide')}
+}
+async function login(){
+  const err=$('err');err.textContent='';
+  const email=$('em').value.trim().toLowerCase(),pass=$('pw').value;
+  if(!email||!pass){err.textContent='Pochta va parolni kiriting';return}
+  $('go').textContent='Kirilmoqda…';
+  try{
+    const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error){
+      const m=error.message||'';
+      if(/invalid login/i.test(m))err.textContent='Pochta yoki parol noto‘g‘ri. Parolni 👁 bilan tekshirib ko‘ring.';
+      else if(/not confirmed/i.test(m))err.textContent='Pochta tasdiqlanmagan. Supabase → Authentication → Users’da “Confirm user”ni bosing.';
+      else err.textContent='Xato: '+m;
+    }else{$('login').classList.add('hide');start(data.user)}
+  }catch(e){err.textContent='Ulanib bo‘lmadi: '+(e.message||e)}
+  $('go').textContent='Kirish';
+}
+$('show').onclick=()=>{const p=$('pw');p.type=p.type==='password'?'text':'password'};
+$('go').onclick=login;
+$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+$('out').onclick=async()=>{if(confirm('Chiqasizmi?')){await sb.auth.signOut();location.reload()}};
+
+/* ---------- xabarlar ---------- */
+const fmt=t=>{try{return new Date(t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}catch(e){return''}};
+async function mediaUrl(p){
+  if(urlCache[p])return urlCache[p];
+  const {data,error}=await sb.storage.from('media').createSignedUrl(p,3600);
+  if(error||!data)return null;return urlCache[p]=data.signedUrl;
+}
+function addMsg(m,anim){
+  if(seen.has(m.id))return;seen.add(m.id);
+  const e=list.querySelector('.empty');if(e)e.remove();
+  const el=document.createElement('div');
+  el.className='m glass'+(m.sender===me.id?' me':'')+(anim?' new':'');
+  if(m.media_path){
+    const x=document.createElement(m.media_kind==='video'?'video':'img');
+    if(m.media_kind==='video'){x.controls=true;x.playsInline=true;x.preload='metadata'}
+    mediaUrl(m.media_path).then(u=>{if(u)x.src=u});el.appendChild(x);
+  }
+  if(m.body){const t=document.createElement('div');t.className='t';t.textContent=m.body;el.appendChild(t)}
+  const s=document.createElement('div');s.className='ts';s.textContent=fmt(m.created_at);el.appendChild(s);
+  list.appendChild(el);
+  list.scrollTo({top:list.scrollHeight,behavior:anim?'smooth':'auto'});
+}
+async function insert(o){
+  const {data,error}=await sb.from('messages').insert({sender:me.id,...o}).select().single();
+  if(error){st.textContent='yuborib bo‘lmadi';return}
+  addMsg(data,true);
+}
+async function sendText(){
+  const t=inp.value.trim();if(!t)return;
+  inp.value='';inp.style.height='auto';await insert({body:t.slice(0,2000)});
+}
+$('send').onclick=sendText;
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendText()}});
+inp.addEventListener('input',()=>{inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,120)+'px'});
+$('att').onclick=()=>$('file').click();
+$('file').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  if(f.size>50*1024*1024){alert('Fayl 50 MB dan kichik bo‘lishi kerak');return}
+  st.textContent='yuklanmoqda…';
+  const ext=(f.name.split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const path=me.id+'/'+Date.now()+'.'+ext;
+  const {error}=await sb.storage.from('media').upload(path,f,{contentType:f.type});
+  if(error){st.textContent='yuklab bo‘lmadi';return}
+  await insert({media_path:path,media_kind:f.type.startsWith('video')?'video':'image'});
+  st.textContent='onlayn';
+};
+
+async function start(user){
+  me=user;$('app').classList.remove('hide');
+  const {data,error}=await sb.from('messages').select('*').order('created_at',{ascending:true}).limit(200);
+  if(error){st.textContent='xato';return}
+  if(!data.length){list.innerHTML='<div class="empty">Bu yerda faqat siz va yaqiningiz. Birinchi xabarni yozing 💜</div>'}
+  data.forEach(m=>addMsg(m,false));
+  sb.channel('db-messages').on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>addMsg(p.new,true))
+    .subscribe(s=>{st.textContent=s==='SUBSCRIBED'?'onlayn':'ulanmoqda…'});
+  setupCall();
+}
+
+/* ---------- videoqo'ng'iroq ---------- */
+const ICE=[{urls:'stun:stun.l.google.com:19302'}];
+let ch=null,pc=null,ls=null,pend=null,tmr=null;
+const call=$('call'),cs=$('cs');
+function show(on,txt,acc){call.classList.toggle('on',on);cs.textContent=txt||'';$('acc').style.display=acc?'block':'none'}
+function sig(o){return ch.send({type:'broadcast',event:'sig',payload:o})}
+function setupCall(){
+  if(!navigator.mediaDevices)return;
+  ch=sb.channel('oasis-call',{config:{private:true,broadcast:{self:false}}});
+  ch.on('broadcast',{event:'sig'},m=>onSig(m.payload)).subscribe(s=>{if(s==='SUBSCRIBED')$('vc').disabled=false});
+}
+async function media(){if(ls)return;ls=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true});$('lv').srcObject=ls}
+function mk(){
+  pc=new RTCPeerConnection({iceServers:ICE});
+  ls.getTracks().forEach(t=>pc.addTrack(t,ls));
+  pc.ontrack=e=>{$('rv').srcObject=e.streams[0]};
+  pc.onconnectionstatechange=()=>{
+    if(!pc)return;
+    if(pc.connectionState==='connected'){clearTimeout(tmr);cs.textContent=''}
+    if(pc.connectionState==='failed')finish(false,'Ulanib bo‘lmadi (tarmoq to‘sqinlik qilmoqda)');
+  };
+}
+const gather=()=>new Promise(r=>{
+  if(pc.iceGatheringState==='complete')return r();
+  const f=()=>{if(pc.iceGatheringState==='complete'){pc.removeEventListener('icegatheringstatechange',f);r()}};
+  pc.addEventListener('icegatheringstatechange',f);setTimeout(r,4000);
+});
+async function finish(notify,msg){
+  clearTimeout(tmr);if(notify)try{await sig({t:'bye'})}catch(e){}
+  if(pc){pc.close();pc=null}
+  if(ls){ls.getTracks().forEach(t=>t.stop());ls=null}
+  pend=null;$('rv').srcObject=null;$('lv').srcObject=null;
+  if(msg){show(true,msg);setTimeout(()=>show(false),2500)}else show(false);
+}
+$('vc').onclick=async()=>{
+  if(pc)return;show(true,'Qo‘ng‘iroq qilinmoqda…');
+  try{
+    await media();mk();
+    await pc.setLocalDescription(await pc.createOffer());await gather();
+    await sig({t:'offer',sdp:pc.localDescription.sdp});
+    tmr=setTimeout(()=>finish(true,'Javob bermadi'),45000);
+  }catch(e){finish(false,'Kamera yoki mikrofonga ruxsat berilmadi')}
+};
+async function onSig(d){
+  if(!d)return;
+  if(d.t==='offer'){
+    if(pc)return;pend=d;
+    show(true,'Qo‘ng‘iroq kelmoqda — yashil tugmani bosing',true);
+    tmr=setTimeout(()=>finish(false),45000);
+  }else if(d.t==='answer'&&pc){
+    await pc.setRemoteDescription({type:'answer',sdp:d.sdp});clearTimeout(tmr);
+  }else if(d.t==='bye'){finish(false,'Qo‘ng‘iroq tugadi')}
+}
+$('acc').onclick=async()=>{
+  if(!pend)return;const o=pend;pend=null;clearTimeout(tmr);show(true,'Ulanmoqda…');
+  try{
+    await media();mk();
+    await pc.setRemoteDescription({type:'offer',sdp:o.sdp});
+    await pc.setLocalDescription(await pc.createAnswer());await gather();
+    await sig({t:'answer',sdp:pc.localDescription.sdp});
+  }catch(e){finish(true,'Kamera yoki mikrofonga ruxsat berilmadi')}
+};
+$('end').onclick=()=>finish(true);
+$('mic').onclick=e=>{if(!ls)return;const t=ls.getAudioTracks()[0];t.enabled=!t.enabled;e.currentTarget.classList.toggle('off',!t.enabled)};
+$('cam').onclick=e=>{if(!ls)return;const t=ls.getVideoTracks()[0];t.enabled=!t.enabled;e.currentTarget.classList.toggle('off',!t.enabled)};
+
+boot();
+</script>
+</body>
+</html>
