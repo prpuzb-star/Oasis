@@ -1,10 +1,13 @@
-const CACHE='oasis-v41';
+const CACHE='oasis-v9';
 const SHELL=['oasis-app.html','oasis.webmanifest','oasis-192.png','oasis-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).catch(()=>{}));self.skipWaiting()});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE&&x!=='oasis-emo').map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
   const r=e.request;if(r.method!=='GET')return;
   const u=new URL(r.url);
+  if(u.hostname==='fonts.gstatic.com'&&u.pathname.indexOf('/notoemoji/')>-1){
+    e.respondWith(caches.open('oasis-emo').then(async c=>{const hit=await c.match(r.url);if(hit)return hit;
+      try{const res=await fetch(r.url,{mode:'cors'});if(res.ok)c.put(r.url,res.clone());return res}catch(_){return fetch(r)}}));return}
   const own=u.origin===location.origin,lib=u.hostname==='cdn.jsdelivr.net';
   if(!own&&!lib)return;
   e.respondWith(fetch(r,own?{cache:'no-cache'}:undefined).then(res=>{if(res&&res.ok){const cp=res.clone();caches.open(CACHE).then(c=>c.put(r,cp))}return res}).catch(()=>caches.match(r)));
