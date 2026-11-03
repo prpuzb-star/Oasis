@@ -217,8 +217,8 @@ body.lite #home,body.lite #chat{transition-duration:.15s}
 .srow.on .sw{background:#34c759}.srow.on .sw::after{transform:translateX(18px)}
 .ver{font-size:11px;color:var(--s);text-align:center;padding:6px}
 .ptop{display:flex;justify-content:space-between;padding:12px 14px 0}
-.pf{display:flex;flex-direction:column;align-items:center;text-align:center}
-.pf .cav.big{width:120px;height:120px;font-size:50px}
+.pfw{display:flex;flex-direction:column;align-items:center;text-align:center}
+.pfw .cav.big{width:120px;height:120px;font-size:50px}
 .pfn{font-size:26px;font-weight:700;margin-top:12px;overflow-wrap:anywhere}
 .pfs{color:var(--s);margin-top:2px;display:flex;align-items:center;gap:4px}
 .pfs .pe{width:16px;height:16px}
@@ -331,6 +331,21 @@ body.lite #fx,body.lite #splash img{animation:none}
 .dth{position:absolute;font-size:36px;pointer-events:none;animation:dth .85s ease-out forwards;z-index:3}
 @keyframes dth{0%{transform:scale(.2);opacity:0}35%{transform:scale(1.35);opacity:1}100%{transform:scale(1) translateY(-34px);opacity:0}}
 .newdiv{align-self:stretch;text-align:center;font-size:12px;font-weight:600;color:#ff2d75;padding:5px;margin:8px 0 4px;border-top:1px solid rgba(255,45,117,.35);border-bottom:1px solid rgba(255,45,117,.35)}
+
+.t.emo{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px;white-space:normal}
+.t.emo .pf,.t.emo .pe{width:var(--es);height:var(--es);font-size:calc(var(--es)*.78);line-height:var(--es);margin:0;vertical-align:baseline}
+.t.emo.sm{max-width:300px}
+.m.jumbo{background:none!important;border:0!important;box-shadow:none!important;padding:2px 4px 0;overflow:visible}
+.m.jumbo .ts,.m.jumbo.me .ts{justify-content:center;color:var(--s)}
+.m.jumbo .tk{filter:drop-shadow(0 0 1px rgba(0,0,0,.4))}
+.t a{color:inherit;text-decoration:underline;text-underline-offset:2px;word-break:break-all}
+.avw{position:relative;flex:none}.odot{position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;background:#34c759;border:2px solid var(--sheet,#fff)}
+:root[data-bub=flat] .m{box-shadow:none;border:0;border-radius:18px}
+:root[data-bub=flat] .m:not(.me){background:var(--sheet)}
+:root[data-bub=tg] .m{border-radius:16px;box-shadow:none;border:0;padding:6px 11px 4px}
+:root[data-bub=tg] .m.me.tail{border-bottom-right-radius:4px}
+:root[data-bub=tg] .m:not(.me).tail{border-bottom-left-radius:4px}
+:root[data-bub=tg] .m:not(.me){background:var(--sheet)}
 </style>
 </head>
 <body>
@@ -385,6 +400,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 <button class="srow" id="s-bg"><span class="si">🎨</span><span class="sl">Orqa fon</span><span class="sv">›</span></button>
 <button class="srow" id="s-acc"><span class="si">🌈</span><span class="sl">Rang mavzusi</span><span class="sv">›</span></button>
 <button class="srow" id="s-theme"><span class="si">🌓</span><span class="sl">Kun / tun rejimi</span><span class="sv" id="sv-theme">Avto</span></button>
+<button class="srow" id="s-bub"><span class="si">💬</span><span class="sl">Pufak uslubi</span><span class="sv" id="sv-bub">Suyuq</span></button>
 <button class="srow" id="s-font"><span class="si">🔠</span><span class="sl">Matn o‘lchami</span><span class="sv" id="sv-font">16</span></button>
 </div>
 <div class="sgrp glass">
@@ -503,7 +519,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 </div>
 
 <script>
-const VER='v9';
+const VER='v10';
 const SB_URL='https://ilhxksrrfnxoomnaleyo.supabase.co';
 const SB_KEY='sb_publishable_BHVnn4xL-gpbRHYLWL7fkQ_sJFHcblM';
 const VAPID_PUB='BOsy5UXVVUvH3ZBiwB0cJv4NE18GIBHu8lnIp3zcR8qtoFQPWKe5pyWgWRmg-L8ZdzTYHcHw7mV-nerugF0fwpM';
@@ -537,7 +553,7 @@ const CATS=[
 ].map(c=>({i:c[0],n:c[1],l:Array.from(c[2])}));
 const PE=new Set(CATS.flatMap(c=>c.l));
 const PLAIN=Array.from('💞❣🧿🪄🧸🪩🛍🏖🏝🌅🌆🌃🏙🎡🎢🛳⛵🚤🛶🪁🎭🎨🧩♟🎲🎰🎳📚✏📝📌📎🔒🧲🕯🪞🛏🛁🧴🪥☎📞📺📻⏰⌛🌡🧭🏳🏴');
-const peRe=new RegExp('('+[...PE].join('|')+')','gu');
+const peRe=/((?![\u00A9\u00AE])\p{Extended_Pictographic}(?:\uFE0F|[\u{1F3FB}-\u{1F3FF}])?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|[\u{1F3FB}-\u{1F3FF}])?)*)/gu;
 const hex=ch=>Array.from(ch).map(c=>c.codePointAt(0).toString(16)).join('_');
 const PE_Q=[];let peBusy=0;
 function peLoad(){while(peBusy<4&&PE_Q.length){const j=PE_Q.shift();if(!j.sp.isConnected)continue;peBusy++;const im=new Image();im.decoding='async';im.className='pe';im.alt=j.ch;
@@ -545,7 +561,9 @@ function peLoad(){while(peBusy<4&&PE_Q.length){const j=PE_Q.shift();if(!j.sp.isC
 const peIO='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){peIO.unobserve(e.target);const j=e.target._pe;if(j){PE_Q.push(j);peLoad()}}}),{root:list,rootMargin:'320px'}):null;
 function peNode(ch,lz){const sp=document.createElement('span');sp.className='pf';sp.textContent=ch;const j={ch,sp,url:'https://fonts.gstatic.com/s/e/notoemoji/latest/'+hex(ch)+'/512.gif'};
   if(lz&&peIO){sp._pe=j;peIO.observe(sp)}else{PE_Q.push(j);setTimeout(peLoad,0)}return sp}
-function rich(el,text,lz){let last=0;text.replace(peRe,(m,ch,off)=>{if(off>last)el.appendChild(document.createTextNode(text.slice(last,off)));el.appendChild(peNode(ch,lz));last=off+m.length;return m});if(last<text.length)el.appendChild(document.createTextNode(text.slice(last)))}
+function addText(el,str){const parts=str.split(/(https?:\/\/[^\s<]+)/g);parts.forEach((x,i)=>{if(!x)return;if(i%2){const a=document.createElement('a');a.href=x;a.target='_blank';a.rel='noopener';a.textContent=x;el.appendChild(a)}else el.appendChild(document.createTextNode(x))})}
+function rich(el,text,lz){let last=0;text.replace(peRe,(m,ch,off)=>{if(off>last)addText(el,text.slice(last,off));el.appendChild(peNode(ch,lz));last=off+m.length;return m});if(last<text.length)addText(el,text.slice(last))}
+function emojiOnly(t){const arr=t.match(peRe)||[];if(!arr.length)return null;const rest=t.replace(peRe,'').replace(/[\s\uFE0F\u200D]/g,'');return rest===''?arr:null}
 const onlyPE=t=>{const s=t.replace(peRe,'').replace(/\uFE0F/g,'').trim();const n=(t.match(peRe)||[]).length;return s===''&&n>0&&n<=3};
 
 /* ---------- yordamchilar ---------- */
@@ -579,10 +597,14 @@ $('s-acc').onclick=()=>{const p=$('pop');p.textContent='';const c=div('pcard');c
 const THEMES=[['auto','Avto'],['light','Kun'],['dark','Tun']];
 function applyTheme(){const t=LS.get('oasis_theme')||'auto';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);$('sv-theme').textContent=(THEMES.find(x=>x[0]===t)||THEMES[0])[1]}
 $('s-theme').onclick=()=>{const t=LS.get('oasis_theme')||'auto';const i=(THEMES.findIndex(x=>x[0]===t)+1)%THEMES.length;LS.set('oasis_theme',THEMES[i][0]);applyTheme()};
+const BUBS=[['liquid','Suyuq'],['flat','Tekis'],['tg','Klassik']];
+function applyBub(){const b=LS.get('oasis_bub')||'liquid';document.documentElement.setAttribute('data-bub',b);$('sv-bub').textContent=(BUBS.find(x=>x[0]===b)||BUBS[0])[1]}
+$('s-bub').onclick=()=>{const b=LS.get('oasis_bub')||'liquid';LS.set('oasis_bub',BUBS[(BUBS.findIndex(x=>x[0]===b)+1)%BUBS.length][0]);applyBub()};
+applyBub();
 const FONTS=[14,16,18,20];
 function applyFont(){const f=Number(LS.get('oasis_font')||16);document.documentElement.style.setProperty('--fs',f+'px');$('sv-font').textContent=f}
 $('s-font').onclick=()=>{const f=Number(LS.get('oasis_font')||16);LS.set('oasis_font',String(FONTS[(FONTS.indexOf(f)+1)%FONTS.length]));applyFont()};
-function burst(chars,n){if(lite==='on'||document.visibilityState!=='visible')return;const fx=$('fx');
+function burst(chars,n){if(document.visibilityState!=='visible')return;if(lite==='on')n=Math.min(n||12,4);const fx=$('fx');
   for(let i=0;i<(n||12);i++){const sp=document.createElement('span');sp.textContent=chars[Math.floor(Math.random()*chars.length)];
     sp.style.cssText='left:'+(8+Math.random()*84)+'%;--sz:'+(20+Math.random()*26)+'px;--d:'+(1.8+Math.random()*1.4)+'s;--dx:'+((Math.random()-.5)*120)+'px;--r:'+((Math.random()-.5)*70)+'deg;animation-delay:'+(Math.random()*.5)+'s';
     sp.addEventListener('animationend',()=>sp.remove());fx.appendChild(sp)}}
@@ -741,7 +763,7 @@ function musicSection(uid,mine){
   if(mine){const b=document.createElement('button');b.className='pa';b.style.width='100%';b.textContent='＋ Musiqa qo‘shish (mp3)';b.onclick=()=>$('trf').click();card.appendChild(b)}
   return card}
 function buildProfile(uid){
-  const mine=uid===me.id,p=profiles.get(uid)||{},w=div('pf'),photos=photosBy.get(uid)||[];
+  const mine=uid===me.id,p=profiles.get(uid)||{},w=div('pfw'),photos=photosBy.get(uid)||[];
   const av=avNode(p.avatar,initial(p.name),'big');av.style.cursor='pointer';
   av.onclick=()=>{if(photos.length)openGallery(uid,0);else if(mine)$('avf').click()};w.appendChild(av);
   w.appendChild(div('pfn',p.name||'Kontakt'));
@@ -955,7 +977,7 @@ function renderList(){
   vis.sort((a,b)=>new Date((lastOf(b.id)||b).created_at)-new Date((lastOf(a.id)||a).created_at));
   if(!vis.length){box.appendChild(div('empty',chats.length?'Bu papkada chat yo‘q':'Hali chat yo‘q.\n“Kontaktlar” bo‘limidan yozishni boshlang yoki ✎ bilan guruh yarating'));return}
   vis.forEach(c=>{
-    const d=disp(c),it=div('ci');it.appendChild(avNode(d.url,d.fb));
+    const d=disp(c),it=div('ci');const aw=div('avw');aw.appendChild(avNode(d.url,d.fb));if(c.kind==='dm'&&online.has(peerOf(c)))aw.appendChild(div('odot'));it.appendChild(aw);
     const mid=div('mid');const b=document.createElement('b');b.textContent=d.title;
     if(c.kind!=='dm'){const k=document.createElement('span');k.className='kind';k.textContent=c.kind==='channel'?'kanal':'guruh';b.appendChild(k)}
     const l=lastOf(c.id),ty=typing[c.id]&&Date.now()-typing[c.id]<3500;
@@ -1117,7 +1139,7 @@ function voiceEl(m){
   for(let i=0;i<28;i++){seed=(seed*9301+49297)%233280;const s=document.createElement('i');s.style.height=(6+Math.round(seed/233280*20))+'px';wave.appendChild(s);bars.push(s)}
   const tm=div('vt',fmtDur(m.dur||0));let a=null;
   b.onclick=async e=>{e.stopPropagation();
-    if(!a){const u=await mediaUrl(m.media_path);if(!u)return;a=new Audio(u);a.preload='auto';a.playbackRate=1;
+    if(!a){const u=await mediaUrl(m.media_path);if(!u)return;a=new Audio(u);a.preload='auto';a.playbackRate=SP[si];a.playbackRate=1;
       a.ontimeupdate=()=>{const d=isFinite(a.duration)&&a.duration>0?a.duration:(m.dur||1);const p=a.currentTime/d;bars.forEach((s,i)=>s.classList.toggle('on',i/bars.length<p));tm.textContent=fmtDur(Math.max(0,Math.round(d-a.currentTime)))};
       a.onended=()=>{b.textContent='▶';bars.forEach(s=>s.classList.remove('on'));tm.textContent=fmtDur(m.dur||0)};
       a.onpause=()=>{b.textContent='▶'};a.onplay=()=>{b.textContent='⏸'}}
@@ -1129,7 +1151,7 @@ function voiceEl(m){
 }
 function cleanBody(t){return String(t).replace(/[\u3164\u2800\u115F\u1160\u200B\u200C\u200E\u200F\u2060\uFEFF]/g,' ').replace(/[ \t\u00A0\u2000-\u200A\u202F\u205F\u3000]+/g,' ').replace(/ ?\n ?/g,'\n').replace(/\n{3,}/g,'\n\n').trim()}
 function fill(el,m){
-  el.textContent='';const mine=m.sender===me.id,c=chatById(m.chat_id);
+  el.textContent='';el.classList.remove('jumbo');const mine=m.sender===me.id,c=chatById(m.chat_id);
   if(!mine&&c&&c.kind!=='dm'&&!m.deleted)el.appendChild(div('sn',pName(m.sender)));
   if(m.fwd_from&&!m.deleted)el.appendChild(div('fw','↪ Yo‘naltirilgan: '+pName(m.fwd_from)));
   if(m.deleted){el.appendChild(div('t del','🚫 Xabar o‘chirildi'))}
@@ -1139,7 +1161,9 @@ function fill(el,m){
       if(m.media_kind==='image'){const im=document.createElement('img');im.className='mi';im.alt='';im.decoding='async';im.onload=()=>{if(Date.now()<stickUntil)toBottom()};lazy(im,()=>mediaUrl(m.media_path).then(u=>{if(u)im.src=u}));im.onclick=e=>{e.stopPropagation();if(im.src)openViewer(im.src)};el.appendChild(im)}
       else if(m.media_kind==='video'){const t=div('vtile','▶');t.onclick=async e=>{e.stopPropagation();const u=await mediaUrl(m.media_path);if(!u)return;const v=document.createElement('video');v.controls=true;v.playsInline=true;v.autoplay=true;v.src=u;t.replaceWith(v)};el.appendChild(t)}
       else if(m.media_kind==='audio')el.appendChild(voiceEl(m))}
-    if(m.body){const bt=cleanBody(m.body);if(bt){const t=div('t');if(onlyPE(bt))t.classList.add('big');rich(t,bt,true);el.appendChild(t)}}
+    if(m.body){const bt=cleanBody(m.body);if(bt){const eo=(!m.reply_to&&!m.media_path)?emojiOnly(bt):null;
+      if(eo){const n=eo.length,t=div('t emo'+(n>10?' sm':''));t.style.setProperty('--es',(n===1?128:n===2?104:n===3?90:n<=5?72:n<=8?58:n<=10?50:30)+'px');if(n<=10)el.classList.add('jumbo');eo.slice(0,150).forEach(ch=>t.appendChild(peNode(ch,true)));el.appendChild(t)}
+      else{const t=div('t');rich(t,bt,true);el.appendChild(t)}}}
   }
   const s=div('ts');if(m.edited_at&&!m.deleted)s.appendChild(div('','tahrirlangan'));s.appendChild(div('',fmt(m.created_at)));
   if(mine){const k=document.createElement('span');k.className='tk'+(m.read_at?' rd':'');s.appendChild(k)}
@@ -1159,7 +1183,7 @@ function appendBubble(m,anim){
   if(!anim&&unreadFirst&&m.id===unreadFirst)put(div('newdiv','⬇ Yangi xabarlar'));
   fill(el,m);bind(el,m);put(el);els.set(m.id,el);lastEl=el;lastM=m;
   el.classList.add('bob');el.style.animationDelay=(-Math.random()*4)+'s';recent.push(el);
-  if(recent.length>3){const o=recent.shift();o.classList.remove('bob');o.style.animationDelay=''}
+  if(recent.length>5){const o=recent.shift();o.classList.remove('bob');o.style.animationDelay=''}
   if(anim&&(near||mine))list.scrollTo({top:list.scrollHeight,behavior:'smooth'});
 }
 function jumpTo(id){const e=els.get(id);if(!e)return;e.scrollIntoView({block:'center',behavior:'smooth'});e.classList.add('flash');setTimeout(()=>e.classList.remove('flash'),1300)}
