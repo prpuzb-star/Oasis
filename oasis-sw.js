@@ -1,5 +1,5 @@
-const CACHE='oasis-v9';
-const SHELL=['oasis-app.html','oasis.webmanifest','oasis-192.png','oasis-512.png'];
+const CACHE='oasis-v11';
+const SHELL=['oasis-app.html','oasis.webmanifest','oasis-i2-192.png','oasis-i2-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).catch(()=>{}));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE&&x!=='oasis-emo').map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
@@ -16,7 +16,7 @@ self.addEventListener('push',e=>{
   let d={};try{d=e.data.json()}catch(_){}
   e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{
     if(cs.some(c=>c.visibilityState==='visible'))return;
-    return self.registration.showNotification(d.title||'Oasis',{body:d.body||'',icon:'oasis-192.png',badge:'oasis-192.png',tag:'chat-'+(d.chat||''),renotify:true,data:{chat:d.chat}});
+    return self.registration.showNotification(d.title||'Oasis',{body:d.body||'',icon:'oasis-i2-192.png',badge:'oasis-i2-192.png',tag:'chat-'+(d.chat||''),renotify:true,data:{chat:d.chat}});
   }));
 });
 self.addEventListener('notificationclick',e=>{

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Oasis</title>
 <link rel="manifest" href="oasis.webmanifest">
-<link rel="icon" href="oasis-192.png">
+<link rel="icon" href="oasis-i2-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#5b21b6">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -346,17 +346,27 @@ body.lite #fx,body.lite #splash img{animation:none}
 :root[data-bub=tg] .m.me.tail{border-bottom-right-radius:4px}
 :root[data-bub=tg] .m:not(.me).tail{border-bottom-left-radius:4px}
 :root[data-bub=tg] .m:not(.me){background:var(--sheet)}
+#lock{position:fixed;inset:0;z-index:120;background:linear-gradient(160deg,#2b1055,#7a2a8f 55%,#c2417a);display:flex;align-items:center;justify-content:center;color:#fff}
+.lkc{text-align:center;width:100%;max-width:320px;padding:20px}
+.lkav{font-size:44px;margin-bottom:8px}.lkt{font-size:18px;margin-bottom:18px;min-height:24px}
+.lkd{display:flex;gap:14px;justify-content:center;margin-bottom:26px}
+.lkd i{width:14px;height:14px;border-radius:50%;border:2px solid #fff;transition:background .15s}.lkd i.on{background:#fff}
+.lkd.shake{animation:shk .4s}@keyframes shk{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.lkp{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;justify-items:center}
+.lkp button{width:72px;height:72px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.14);color:#fff;font-size:26px;cursor:pointer}
+.lkp button:active{background:rgba(255,255,255,.35)}
+.lkx{display:block;margin:16px auto 0;background:none;border:0;color:#fff;opacity:.85;font-size:15px;cursor:pointer}
 </style>
 </head>
 <body>
-<div id="splash"><img src="oasis-192.png" alt=""><b>Oasis</b></div>
+<div id="splash"><img src="oasis-i2-192.png" alt=""><b>Oasis</b></div>
 <div id="fx"></div>
 <div id="bg"></div><div id="bgfx"></div>
 <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
 
 <div id="login" class="hide">
 <div class="card glass">
-<img class="logo" src="oasis-192.png" alt="">
+<img class="logo" src="oasis-i2-192.png" alt="">
 <h1>Oasis</h1><p>Xush kelibsiz 💜</p>
 <div class="seg"><button class="tab on" id="lt-in">Kirish</button><button class="tab" id="lt-up">Ro‘yxatdan o‘tish</button></div>
 <input id="sn" class="hide" placeholder="Ismingiz" maxlength="40" autocomplete="name">
@@ -375,11 +385,12 @@ body.lite #fx,body.lite #splash img{animation:none}
 <section id="home">
 <div class="page" id="pg-chats">
 <header class="glass">
-<img class="logo" src="oasis-192.png" alt="">
+<img class="logo" src="oasis-i2-192.png" alt="">
 <div class="nm"><b>Oasis</b><small id="st">ulanmoqda…</small></div>
 <button class="ib" id="newc" title="Yangi guruh yoki kanal">✎</button>
 </header>
 <div id="nbn" class="glass hide" style="margin:8px 12px 0;padding:10px 14px;border-radius:20px;display:flex;align-items:center;gap:10px;font-size:14px"><span style="flex:1">🔔 Xabar kelganda bildirishnoma olish</span><button id="nbb" style="border:0;background:var(--me);color:#fff;border-radius:14px;padding:7px 14px;cursor:pointer">Yoqish</button></div>
+<div class="srch glass" id="csrow" style="margin:6px 12px 0"><input id="csi" placeholder="Chatlarni qidirish" autocomplete="off"></div>
 <div id="tabs"></div>
 <div id="chats"></div>
 </div>
@@ -411,6 +422,10 @@ body.lite #fx,body.lite #splash img{animation:none}
 <div class="sgrp glass">
 <button class="srow" id="s-lite"><span class="si">⚡</span><span class="sl">Yengil rejim</span><i class="sw"></i></button>
 <button class="srow" id="s-blur"><span class="si">💎</span><span class="sl">Shisha effekti</span><i class="sw"></i></button>
+</div>
+<div class="sgrp glass">
+<button class="srow" id="s-pin"><span class="si">🔒</span><span class="sl">Ilovani PIN bilan qulflash</span><span class="sv" id="sv-pin">O‘chiq</span></button>
+<button class="srow" id="s-new"><span class="si">✨</span><span class="sl">Yangiliklar</span><span class="sv">›</span></button>
 </div>
 <div class="sgrp glass">
 <button class="srow" id="s-inst"><span class="si">📲</span><span class="sl">Ilovani o‘rnatish</span><span class="sv">›</span></button>
@@ -472,6 +487,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 <div id="gal" class="hide"><div class="galh"><button class="ib" id="gal-x">←</button><b id="gal-c"></b><span style="flex:1"></span><button class="ib hide" id="gal-main" title="Asosiy rasm qilish">⭐</button><button class="ib hide" id="gal-del" title="O‘chirish">🗑</button></div><div class="galb" id="gal-b"><img id="gal-i" alt=""></div><button class="galn gp" id="gal-p">‹</button><button class="galn gn" id="gal-n">›</button></div>
 
 <div id="newpw" class="hide"><div class="ncc"><h3>Yangi parol</h3><input id="npv" type="password" placeholder="Yangi parol (kamida 8 ta belgi)" autocomplete="new-password"><div id="nperr" style="color:#ff453a;font-size:13px;min-height:16px;margin-bottom:6px"></div><div class="row2"><button class="pri" id="npgo">Saqlash</button></div></div></div>
+<div id="lock" class="hide"><div class="lkc"><div class="lkav">🔒</div><div class="lkt" id="lkt">PIN kodni kiriting</div><div class="lkd" id="lkd"><i></i><i></i><i></i><i></i></div><div class="lkp" id="lkp"></div><button class="lkx hide" id="lkx">Bekor qilish</button><button class="lkx hide" id="lkf">PIN esdan chiqdimi?</button></div></div>
 <div id="pop" class="hide"></div>
 <div id="viewer" class="hide"><img id="vimg" alt=""><button class="vx">✕</button></div>
 <div id="nc" class="hide"><div class="ncc"><h3>Yangi chat</h3>
@@ -519,7 +535,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 </div>
 
 <script>
-const VER='v10';
+const VER='v11';
 const SB_URL='https://ilhxksrrfnxoomnaleyo.supabase.co';
 const SB_KEY='sb_publishable_BHVnn4xL-gpbRHYLWL7fkQ_sJFHcblM';
 const VAPID_PUB='BOsy5UXVVUvH3ZBiwB0cJv4NE18GIBHu8lnIp3zcR8qtoFQPWKe5pyWgWRmg-L8ZdzTYHcHw7mV-nerugF0fwpM';
@@ -824,7 +840,7 @@ function ensureAudio(){if(player.a)return player.a;const a=player.a=new Audio();
   a.onended=()=>{if(player.list.length>1)stepTrack(1);else updPlayerUI()};
   a.onerror=()=>toast('Musiqa ochilmadi');return a}
 function setMediaSession(t){if(!('mediaSession' in navigator))return;
-  try{const ms=navigator.mediaSession;ms.metadata=new MediaMetadata({title:t.title||'Qo‘shiq',artist:t.artist||pName(t.user_id),album:'Oasis',artwork:[{src:t.cover||'oasis-512.png',sizes:'512x512',type:t.cover?'image/jpeg':'image/png'}]});
+  try{const ms=navigator.mediaSession;ms.metadata=new MediaMetadata({title:t.title||'Qo‘shiq',artist:t.artist||pName(t.user_id),album:'Oasis',artwork:[{src:t.cover||'oasis-i2-512.png',sizes:'512x512',type:t.cover?'image/jpeg':'image/png'}]});
     ms.setActionHandler('play',()=>player.a&&player.a.play());ms.setActionHandler('pause',()=>player.a&&player.a.pause());
     ms.setActionHandler('previoustrack',()=>stepTrack(-1));ms.setActionHandler('nexttrack',()=>stepTrack(1));
     ms.setActionHandler('seekto',d=>{if(player.a&&d.seekTime!=null)player.a.currentTime=d.seekTime})}catch(e){}}
@@ -963,6 +979,45 @@ $('pr-more').onclick=()=>{const p=$('pop');p.textContent='';const c=div('pcard')
   p.appendChild(c);p._t=Date.now();p.classList.remove('hide')};
 
 /* ---------- chatlar ro'yxati ---------- */
+/* ---------- PIN qulf, yangiliklar, chatni qadash ---------- */
+const sha=async t=>{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('oasis:'+t));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')};
+let lockMode='check',lockBuf='',lockTmp='',hiddenAt=0;
+(function(){const pd=$('lkp');['1','2','3','4','5','6','7','8','9','','0','⌫'].forEach(k=>{const b=document.createElement('button');if(!k)b.style.visibility='hidden';else{b.textContent=k;b.onclick=()=>lockKey(k)}pd.appendChild(b)})})();
+function lockDots(){Array.from($('lkd').children).forEach((d,i)=>d.classList.toggle('on',i<lockBuf.length))}
+function lockShow(mode,title,cancelable){lockMode=mode;lockBuf='';lockTmp='';$('lkt').textContent=title;$('lkx').classList.toggle('hide',!cancelable);$('lkf').classList.toggle('hide',mode!=='check');$('lock').classList.remove('hide');lockDots()}
+function lockHide(){$('lock').classList.add('hide');lockBuf=''}
+async function lockKey(k){
+  if(k==='⌫'){lockBuf=lockBuf.slice(0,-1);lockDots();return}
+  if(lockBuf.length>=4)return;lockBuf+=k;lockDots();buzz(8);
+  if(lockBuf.length<4)return;
+  const pin=lockBuf;await new Promise(r=>setTimeout(r,120));
+  const bad=()=>{buzz(60);const d=$('lkd');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');lockBuf='';setTimeout(lockDots,300)};
+  try{
+    if(lockMode==='check'||lockMode==='off'){
+      if(await sha(pin)===LS.get('oasis_pin')){if(lockMode==='off'){LS.del('oasis_pin');updPin()}lockHide()}else bad()}
+    else if(lockMode==='set1'){lockTmp=pin;lockBuf='';lockDots();lockMode='set2';$('lkt').textContent='PIN kodni qayta kiriting'}
+    else if(lockMode==='set2'){if(pin===lockTmp){LS.set('oasis_pin',await sha(pin));updPin();lockHide();toast('PIN kod yoqildi 🔒')}else{lockMode='set1';lockTmp='';$('lkt').textContent='Mos kelmadi. Yangi PIN kiriting';bad()}}
+  }catch(e){alert('PIN xatosi: '+(e.message||e));lockHide()}
+}
+$('lkx').onclick=lockHide;
+$('lkf').onclick=async()=>{if(confirm('PIN o‘chiriladi va hisobdan chiqasiz. Keyin pochta va parol bilan qayta kirasiz. Davom etamizmi?')){LS.del('oasis_pin');try{await sb.auth.signOut()}catch(e){}location.reload()}};
+function updPin(){$('sv-pin').textContent=LS.get('oasis_pin')?'Yoqiq':'O‘chiq'}
+$('s-pin').onclick=()=>{if(LS.get('oasis_pin'))lockShow('off','O‘chirish uchun joriy PIN ni kiriting',true);else lockShow('set1','Yangi 4 xonali PIN kiriting',true)};
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')hiddenAt=Date.now();
+  else if(LS.get('oasis_pin')&&hiddenAt&&Date.now()-hiddenAt>20000&&$('lock').classList.contains('hide'))lockShow('check','PIN kodni kiriting',false)});
+$('s-new').onclick=()=>{const p=$('pop');p.textContent='';const c=div('pcard');c.appendChild(div('sn','Yangiliklar · '+VER));
+  ['🔒 PIN kod bilan qulflash','📌 Chatni tepaga qadash (chatni uzoq bosing)','🔍 Chatlarni qidirish','🌅 Yangi ikonka','💬 Pufak uslublari','💜 Xabarga ikki marta bosib yurakcha qo‘yish','😍 Emojilar jumbo stiker bo‘lib chiqadi'].forEach(t=>c.appendChild(div('pa',t)));
+  const x=document.createElement('button');x.className='pa';x.textContent='Yopish';x.onclick=closePop;c.appendChild(x);p.appendChild(c);p._t=Date.now();p.classList.remove('hide')};
+function getPins(){try{return JSON.parse(LS.get('oasis_pins')||'[]')}catch(e){return[]}}
+function chatMenu(c){buzz(15);const p=$('pop');p.textContent='';const card=div('pcard');card.appendChild(div('sn',disp(c).title));
+  const pins=getPins(),pinned=pins.includes(c.id);
+  const add=(t,f)=>{const b=document.createElement('button');b.className='pa';b.textContent=t;b.onclick=()=>{closePop();f()};card.appendChild(b)};
+  add(pinned?'📌 Qadashni olib tashlash':'📌 Tepaga qadash',()=>{LS.set('oasis_pins',JSON.stringify(pinned?pins.filter(x=>x!==c.id):[...pins,c.id]));renderList()});
+  if(c.kind!=='dm'&&c.created_by===me.id)add('🗑 Chatni o‘chirish',()=>{if(confirm('“'+c.title+'” chatini barcha xabarlari bilan o‘chirasizmi?'))delChat(c)});
+  p.appendChild(card);p._t=Date.now();p.classList.remove('hide')}
+$('csi').oninput=()=>renderListSoon();
+updPin();if(LS.get('oasis_pin'))lockShow('check','PIN kodni kiriting',false);
+
 function renderList(){
   const tot=chats.reduce((x,c)=>x+unreadOf(c.id),0);const nb=$('nbd');nb.textContent=tot>99?'99+':String(tot);nb.classList.toggle('hide',!tot);
   if(tab==='contacts')renderContacts();
@@ -974,11 +1029,13 @@ function renderList(){
   names.forEach(n=>{const b=document.createElement('button');b.className='tab'+(n===folder?' on':'');b.textContent=n;b.onclick=()=>{folder=n;renderList()};tabs.appendChild(b)});
   const box=$('chats');box.textContent='';
   const vis=chats.filter(c=>folder==='Hammasi'||(folder==='Shaxsiy'&&c.kind==='dm')||(folder==='Guruhlar'&&c.kind==='group')||(folder==='Kanallar'&&c.kind==='channel')||c.folder===folder);
-  vis.sort((a,b)=>new Date((lastOf(b.id)||b).created_at)-new Date((lastOf(a.id)||a).created_at));
+  const q=($('csi').value||'').trim().toLowerCase(),pins=getPins();
+  for(let i=vis.length-1;i>=0;i--){if(q&&!disp(vis[i]).title.toLowerCase().includes(q))vis.splice(i,1)}
+  vis.sort((a,b)=>((pins.includes(b.id)?1:0)-(pins.includes(a.id)?1:0))||(new Date((lastOf(b.id)||b).created_at)-new Date((lastOf(a.id)||a).created_at)));
   if(!vis.length){box.appendChild(div('empty',chats.length?'Bu papkada chat yo‘q':'Hali chat yo‘q.\n“Kontaktlar” bo‘limidan yozishni boshlang yoki ✎ bilan guruh yarating'));return}
   vis.forEach(c=>{
     const d=disp(c),it=div('ci');const aw=div('avw');aw.appendChild(avNode(d.url,d.fb));if(c.kind==='dm'&&online.has(peerOf(c)))aw.appendChild(div('odot'));it.appendChild(aw);
-    const mid=div('mid');const b=document.createElement('b');b.textContent=d.title;
+    const mid=div('mid');const b=document.createElement('b');b.textContent=d.title;if(pins.includes(c.id)){const pn=document.createElement('span');pn.className='kind';pn.textContent='📌';b.appendChild(pn)}
     if(c.kind!=='dm'){const k=document.createElement('span');k.className='kind';k.textContent=c.kind==='channel'?'kanal':'guruh';b.appendChild(k)}
     const l=lastOf(c.id),ty=typing[c.id]&&Date.now()-typing[c.id]<3500;
     const pv=div('pv'+(ty?' ty':''));if(ty)pv.textContent='yozmoqda…';else if(l){pv.appendChild(document.createTextNode((l.sender===me.id?'Siz: ':'')));rich(pv,preview(l))}else pv.textContent='Xabar yo‘q';
@@ -986,7 +1043,7 @@ function renderList(){
     const rt=div('rt');rt.appendChild(div('',l?fmt(l.created_at):''));const u=unreadOf(c.id);if(u)rt.appendChild(div('bd',String(u)));
     it.append(mid,rt);
     let lp=null;
-    it.addEventListener('pointerdown',()=>{lp=setTimeout(()=>{lp=null;if(c.kind!=='dm'&&c.created_by===me.id&&confirm('“'+c.title+'” chatini barcha xabarlari bilan o‘chirasizmi?'))delChat(c)},700)});
+    it.addEventListener('pointerdown',()=>{lp=setTimeout(()=>{lp=null;chatMenu(c)},600)});
     ['pointerup','pointerleave','pointercancel'].forEach(ev=>it.addEventListener(ev,()=>{if(lp){clearTimeout(lp);lp=null}}));
     it.onclick=()=>openChat(c.id);box.appendChild(it)});
 }
