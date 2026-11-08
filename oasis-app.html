@@ -189,7 +189,7 @@ textarea::placeholder{color:var(--s)}
 #rb{width:68px;height:68px;border-radius:50%;border:4px solid #fff;background:#ff3b30;cursor:pointer;transition:border-radius .2s,transform .2s}
 #rb.on{border-radius:18px;transform:scale(.85)}
 #rt{position:absolute;top:calc(env(safe-area-inset-top,0px) + 20px);z-index:2;font-size:18px;background:rgba(0,0,0,.4);padding:6px 14px;border-radius:20px}
-body.lite #bgfx *,body.lite .m.bob{animation:none!important}
+body.lite .m.bob{animation:none!important}
 body.lite .orb{display:none}
 body.lite .m.new,body.lite .m.sp{animation:none}
 body.lite #home,body.lite #chat{transition-duration:.15s}
@@ -358,6 +358,10 @@ body.lite #fx,body.lite #splash img{animation:none}
 .lkx{display:block;margin:16px auto 0;background:none;border:0;color:#fff;opacity:.85;font-size:15px;cursor:pointer}
 #bgfx .snowf{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Cg stroke='white' stroke-width='4.5' stroke-linecap='round' fill='none'%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(0)'/%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(60)'/%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(120)'/%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(180)'/%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(240)'/%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(300)'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;border-radius:0}
 .bdb{margin:8px 12px 0;padding:10px 14px;border-radius:20px;font-size:14px;text-align:center}
+#viewer #vdl{right:66px}
+#pinbar{margin:6px 12px 0;padding:6px 10px;border-radius:18px;display:flex;align-items:center;gap:10px;cursor:pointer;flex:none}
+#pinbar .pbt{flex:1;min-width:0}#pinbar b{display:block;font-size:12px;color:#ff2d75}
+#pinbar #pint{display:block;font-size:13px;color:var(--s);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -423,6 +427,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 </div>
 <div class="sgrp glass">
 <button class="srow" id="s-lite"><span class="si">⚡</span><span class="sl">Yengil rejim</span><i class="sw"></i></button>
+<button class="srow" id="s-bga"><span class="si">✨</span><span class="sl">Fon animatsiyalari</span><i class="sw"></i></button>
 <button class="srow" id="s-blur"><span class="si">💎</span><span class="sl">Shisha effekti</span><i class="sw"></i></button>
 </div>
 <div class="sgrp glass">
@@ -460,6 +465,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 <button class="ib" id="cmn" title="Boshqa">⋮</button>
 </header>
 <header class="glass" id="selbar"><button class="ib" id="sel-x">✕</button><b id="selc" style="flex:1;padding-left:6px">0</b><button class="ib" id="sel-copy" title="Nusxalash">📋</button><button class="ib" id="sel-fw" title="Yo‘naltirish">↪</button><button class="ib" id="sel-del" title="O‘chirish">🗑</button></header>
+<div id="pinbar" class="glass hide"><span>📌</span><div class="pbt"><b>Qadalgan xabar</b><span id="pint"></span></div><button class="ib sm" id="pinx" title="Olib tashlash">✕</button></div>
 <div id="list"></div>
 <button class="ib glass hide" id="tobot" title="Pastga">↓</button>
 <div id="rbar" class="glass hide"><div class="rb1"><b id="rbt"></b><span id="rbs"></span></div><button class="ib" id="rbx">✕</button></div>
@@ -492,7 +498,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 <div id="newpw" class="hide"><div class="ncc"><h3>Yangi parol</h3><input id="npv" type="password" placeholder="Yangi parol (kamida 8 ta belgi)" autocomplete="new-password"><div id="nperr" style="color:#ff453a;font-size:13px;min-height:16px;margin-bottom:6px"></div><div class="row2"><button class="pri" id="npgo">Saqlash</button></div></div></div>
 <div id="lock" class="hide"><div class="lkc"><div class="lkav">🔒</div><div class="lkt" id="lkt">PIN kodni kiriting</div><div class="lkd" id="lkd"><i></i><i></i><i></i><i></i></div><div class="lkp" id="lkp"></div><button class="lkx hide" id="lkx">Bekor qilish</button><button class="lkx hide" id="lkf">PIN esdan chiqdimi?</button></div></div>
 <div id="pop" class="hide"></div>
-<div id="viewer" class="hide"><img id="vimg" alt=""><button class="vx">✕</button></div>
+<div id="viewer" class="hide"><img id="vimg" alt=""><button class="vx" id="vdl" title="Saqlash">⬇</button><button class="vx">✕</button></div>
 <div id="nc" class="hide"><div class="ncc"><h3>Yangi chat</h3>
 <input id="nct" placeholder="Nomi" maxlength="40">
 <div class="seg"><button class="tab on" id="nk-g">👥 Guruh</button><button class="tab" id="nk-c">📢 Kanal</button></div>
@@ -538,7 +544,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 </div>
 
 <script>
-const VER='v12';
+const VER='v13';
 const SB_URL='https://ilhxksrrfnxoomnaleyo.supabase.co';
 const SB_KEY='sb_publishable_BHVnn4xL-gpbRHYLWL7fkQ_sJFHcblM';
 const VAPID_PUB='BOsy5UXVVUvH3ZBiwB0cJv4NE18GIBHu8lnIp3zcR8qtoFQPWKe5pyWgWRmg-L8ZdzTYHcHw7mV-nerugF0fwpM';
@@ -700,9 +706,13 @@ if(window.matchMedia('(display-mode: standalone)').matches)$('s-inst').classList
 $('s-inst').onclick=async()=>{if(deferred){deferred.prompt();try{await deferred.userChoice}catch(e){}deferred=null}else alert('Chrome menyusini (⋮) oching va “Ilovani o‘rnatish” ni tanlang.')};
 document.addEventListener('click',e=>{if(!$('attm').contains(e.target)&&e.target!==$('att'))$('attm').classList.add('hide')});
 const setSw=(id,on)=>$(id).classList.toggle('on',!!on);
-let lite=LS.get('oasis_lite');if(lite===null)lite=((navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4))?'on':'off';
+let lite=LS.get('oasis_lite');if(lite===null)lite=(navigator.deviceMemory&&navigator.deviceMemory<=2)?'on':'off';
 function applyLite(){document.body.classList.toggle('lite',lite==='on');setSw('s-lite',lite==='on')}
-$('s-lite').onclick=()=>{lite=lite==='on'?'off':'on';LS.set('oasis_lite',lite);applyLite()};
+$('s-lite').onclick=()=>{lite=lite==='on'?'off':'on';LS.set('oasis_lite',lite);applyLite();applyBg(true)};
+let bga=LS.get('oasis_bga')!=='off';
+function applyBga(){document.body.classList.toggle('noanim',!bga);setSw('s-bga',bga)}
+$('s-bga').onclick=()=>{bga=!bga;LS.set('oasis_bga',bga?'on':'off');applyBga();applyBg(true)};
+applyBga();
 let blur=LS.get('oasis_blur')==='on';
 function applyBlur(){document.body.classList.toggle('blur',blur);setSw('s-blur',blur)}
 $('s-blur').onclick=()=>{blur=!blur;LS.set('oasis_blur',blur?'on':'off');applyBlur()};
@@ -733,8 +743,8 @@ const BGS=[
  ['photo','🖼 O‘z rasmim',null]];
 let bgMode=LS.get('oasis_bgmode')||'grad';
 const rnd=(a,b)=>a+Math.random()*(b-a);
-function addMany(fx,n,fn){for(let i=0;i<n;i++){const e=document.createElement('div');fn(e,i);fx.appendChild(e)}}
-function waterLayer(fx){fx.appendChild(div('water'));fx.appendChild(div('wave w2'));fx.appendChild(div('wave'))}
+function addMany(fx,n,fn){if(document.body.classList.contains('noanim'))return;if(lite==='on')n=Math.max(4,Math.ceil(n/2));for(let i=0;i<n;i++){const e=document.createElement('div');fn(e,i);fx.appendChild(e)}}
+function waterLayer(fx){if(document.body.classList.contains('noanim'))return;fx.appendChild(div('water'));fx.appendChild(div('wave w2'));fx.appendChild(div('wave'))}
 function renderBg(bgMode,photo){
   const fx=$('bgfx');fx.textContent='';const bd=document.body;
   const th=BGS.find(x=>x[0]===bgMode)||BGS[0];
@@ -1033,7 +1043,7 @@ $('s-pin').onclick=()=>{if(LS.get('oasis_pin'))lockShow('off','O‘chirish uchun
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')hiddenAt=Date.now();
   else if(LS.get('oasis_pin')&&hiddenAt&&Date.now()-hiddenAt>20000&&$('lock').classList.contains('hide'))lockShow('check','PIN kodni kiriting',false)});
 $('s-new').onclick=()=>{const p=$('pop');p.textContent='';const c=div('pcard');c.appendChild(div('sn','Yangiliklar · '+VER));
-  ['🎨 Chat foni endi ikkalangizga ko‘rinadi (chatda ⋮ → Chat foni)','❄️ Haqiqiy qor parchalari','✏️ Yuborilmay qolgan xabar (qoralama) saqlanadi','🎂 Tug‘ilgan kunda tabrik va konfeti','🔍 Chatda qidirish','ℹ️ Sherigingiz ilova versiyasi profilida ko‘rinadi','🔒 PIN kod · 📌 chatni qadash · 💜 ikki marta bosish'].forEach(t=>c.appendChild(div('pa',t)));
+  ['🌸 Fon zarrachalari (yurak, qor, sakura) hamma telefonda ko‘rinadi','✨ Sozlamalarda “Fon animatsiyalari” tugmasi','📌 Xabarni chatga qadash (xabarni bosing)','ℹ️ Xabar haqida: qachon yuborilgan va o‘qilgan','🖼 Rasm/videoga izoh: avval matn yozing, keyin yuboring','⬇ Rasmni telefonga saqlash','🎨 Chat foni ikkalangizga umumiy','🔒 PIN kod · 📌 chatni qadash · 🔍 qidirish'].forEach(t=>c.appendChild(div('pa',t)));
   const x=document.createElement('button');x.className='pa';x.textContent='Yopish';x.onclick=closePop;c.appendChild(x);p.appendChild(c);p._t=Date.now();p.classList.remove('hide')};
 function getPins(){try{return JSON.parse(LS.get('oasis_pins')||'[]')}catch(e){return[]}}
 function chatMenu(c){buzz(15);const p=$('pop');p.textContent='';const card=div('pcard');card.appendChild(div('sn',disp(c).title));
@@ -1170,9 +1180,15 @@ $('ncgo').onclick=async()=>{const title=$('nct').value.trim();if(!title)return;
   if(error){alert('Xato: '+error.message);return}$('nc').classList.add('hide');chatUpsert(data);openChat(data.id)};
 
 /* ---------- chat ochish/yopish ---------- */
+function updPinBar(){const c=cur!==null?chatById(cur):null,b=$('pinbar');if(!c||!c.pin_msg){b.classList.add('hide');return}
+  const m=byId.get(c.pin_msg);b.classList.remove('hide');$('pint').textContent=m?preview(m):'Xabarni ko‘rish uchun bosing'}
+$('pinbar').onclick=e=>{if(e.target.closest&&e.target.closest('#pinx'))return;const c=chatById(cur);if(c&&c.pin_msg)jumpTo(c.pin_msg)};
+$('pinx').onclick=e=>{e.stopPropagation();setChatPin(null)};
+async function setChatPin(mid){if(cur===null)return;const {error}=await sb.rpc('set_chat_pin',{cid:cur,mid});
+  if(error){alert('Xato: '+error.message+'\n(Supabase’da yangi SQL ishga tushirilganmi?)');return}const c=chatById(cur);if(c)c.pin_msg=mid;updPinBar()}
 function setHead(c){const d=disp(c);$('ct').textContent=d.title;const ic=$('cic');ic.textContent='';ic.appendChild(avNode(d.url,d.fb));refreshChatStatus(c);
   const blk=c.kind==='dm'&&blockedIds.has(peerOf(c));const canWrite=!blk&&(c.kind!=='channel'||c.created_by===me.id);
-  $('bar').classList.toggle('hide',!canWrite);$('nope').classList.toggle('hide',canWrite);$('nope').textContent=blk?'🚫 Siz bu foydalanuvchini bloklagansiz':'📢 Bu kanalda faqat egasi yozishi mumkin'}
+  $('bar').classList.toggle('hide',!canWrite);$('nope').classList.toggle('hide',canWrite);$('nope').textContent=blk?'🚫 Siz bu foydalanuvchini bloklagansiz':'📢 Bu kanalda faqat egasi yozishi mumkin';updPinBar()}
 function refreshChatStatus(c){c=c||chatById(cur);if(!c)return;const el=$('cst');
   if(c.kind==='dm'){const u=peerOf(c);if(typing[c.id]&&Date.now()-typing[c.id]<3500){el.textContent='yozmoqda…'}else statusInto(el,u)}else el.textContent=c.kind==='channel'?'Kanal':'Guruh'}
 const fetchedChat={},noMore={};let unreadFirst=0;
@@ -1273,6 +1289,7 @@ function appendBubble(m,anim){
 function jumpTo(id){const e=els.get(id);if(!e)return;e.scrollIntoView({block:'center',behavior:'smooth'});e.classList.add('flash');setTimeout(()=>e.classList.remove('flash'),1300)}
 function openViewer(u){$('vimg').src=u;$('viewer').classList.remove('hide')}
 $('viewer').onclick=()=>$('viewer').classList.add('hide');
+$('vdl').onclick=async e=>{e.stopPropagation();try{const r=await fetch($('vimg').src),b=await r.blob(),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='oasis-'+Date.now()+'.jpg';document.body.appendChild(a);a.click();a.remove();toast('Saqlandi ✅')}catch(err){toast('Saqlab bo‘lmadi')}};
 
 /* ---------- tanlash va yo'naltirish ---------- */
 let selMode=false,sel=new Set();
@@ -1329,6 +1346,10 @@ function bind(el,m){
 }
 function closePop(){$('pop').classList.add('hide')}
 $('pop').addEventListener('click',e=>{if(e.target===$('pop')&&Date.now()-($('pop')._t||0)>350)closePop()});
+function msgInfo(m){const f=t=>t?new Date(t).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+  const p=$('pop');p.textContent='';const c=div('pcard');c.appendChild(div('sn','Xabar haqida'));
+  [['Yuborildi',f(m.created_at)],['O‘qildi',m.read_at?f(m.read_at):'hali o‘qilmagan'],['Tahrirlangan',m.edited_at?f(m.edited_at):'yo‘q']].forEach(([a,b])=>c.appendChild(div('pa',a+': '+b)));
+  const x=document.createElement('button');x.className='pa';x.textContent='Yopish';x.onclick=closePop;c.appendChild(x);p.appendChild(c);p._t=Date.now();p.classList.remove('hide')}
 function openMenu(m){
   if(m.deleted)return;buzz(15);
   const p=$('pop');p.textContent='';const card=div('pcard');
@@ -1337,6 +1358,8 @@ function openMenu(m){
   add('↩ Javob berish',()=>setReply(m));
   add('↪ Yo‘naltirish',()=>forwardMsgs([m]));
   add('☑ Tanlash',()=>enterSel(m));
+  {const pc=chatById(cur);if(pc)add(pc.pin_msg===m.id?'📌 Qadashni olib tashlash':'📌 Chatga qadash',()=>setChatPin(pc.pin_msg===m.id?null:m.id))}
+  if(m.sender===me.id)add('ℹ️ Xabar haqida',()=>msgInfo(m));
   if(m.body)add('📋 Nusxalash',()=>{try{navigator.clipboard.writeText(m.body)}catch(e){}});
   if(m.sender===me.id&&m.body&&!m.media_path)add('✏️ Tahrirlash',()=>startEdit(m));
   if(m.sender!==me.id)add('🚩 Shikoyat qilish',()=>reportMsg(m));
@@ -1380,7 +1403,8 @@ async function sendMedia(blob,type,dur){
   if(error){st.textContent='yuklab bo‘lmadi';log('upload xato: '+error.message);return}
   sendSound();const kind=type.startsWith('video')?'video':type.startsWith('audio')?'audio':'image';
   const rt=replyTo;clearReply();
-  await insert({media_path:path,media_kind:kind,dur:dur||null,reply_to:rt?rt.id:null});st.textContent='onlayn';
+  const cap=kind==='audio'?'':inp.value.trim();if(cap){inp.value='';resize();updIcon();LS.del('oasis_draft_'+cur)}
+  await insert({media_path:path,media_kind:kind,dur:dur||null,body:cap?cap.slice(0,1000):null,reply_to:rt?rt.id:null});st.textContent='onlayn';
 }
 $('att').onclick=e=>{e.stopPropagation();$('attm').classList.toggle('hide')};
 $('a-file').onclick=()=>{$('attm').classList.add('hide');$('file').click()};
@@ -1501,6 +1525,13 @@ $('s-push').onclick=enablePush;$('nbb').onclick=enablePush;
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('oasis-sw.js').catch(()=>{}));
   navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.open)openChat(Number(e.data.open))})}
 
+function perfProbe(){
+  if(LS.get('oasis_probe')||lite==='on')return;let n=0,t0=0,last=0,sum=0;
+  const tick=t=>{if(!t0){t0=t;last=t;requestAnimationFrame(tick);return}sum+=t-last;last=t;n++;
+    if(t-t0<2500){requestAnimationFrame(tick);return}
+    LS.set('oasis_probe','1');
+    if(sum/n>34&&confirm('Ilova bu telefonda sekin ishlayotganga o‘xshaydi. Yengil rejimni yoqaymizmi? (Keyin Sozlamalar → Yengil rejim orqali o‘zgartirsa bo‘ladi. Fon animatsiyalari baribir qoladi.)')){lite='on';LS.set('oasis_lite','on');applyLite();applyBg(true)}};
+  requestAnimationFrame(tick)}
 function checkBirthdays(){
   const t=new Date(),md=String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0'),day=t.toDateString(),names=[];
   profiles.forEach(pp=>{if(pp.birthday&&String(pp.birthday).slice(5)===md)names.push(pp.id===me.id?'sizning':(pp.name||'Kontakt')+'ning')});
@@ -1519,7 +1550,7 @@ async function start(user){
   chats=cr.data;pr.data.forEach(p=>profiles.set(p.id,p));(kr.data||[]).forEach(x=>contactIds.add(x.contact_id));(br.data||[]).forEach(x=>blockedIds.add(x.blocked));myP=profiles.get(me.id)||{id:me.id,name:(me.email||'').split('@')[0]};
   mr.data.reverse().forEach(m=>{if(m.chat_id==null)return;(msgs[m.chat_id]=msgs[m.chat_id]||[]).push(m);byId.set(m.id,m)});
   renderMyAv();renderList();touchSeen();loadMedia();hideSplash();
-  chats.forEach(c=>{if(!(msgs[c.id]&&msgs[c.id].length))loadLatest(c.id,3)});loadUnread();checkBirthdays();
+  chats.forEach(c=>{if(!(msgs[c.id]&&msgs[c.id].length))loadLatest(c.id,3)});loadUnread();checkBirthdays();setTimeout(()=>{if(document.visibilityState==='visible')perfProbe()},6000);
   if(pushOK()&&Notification.permission==='default')$('nbn').classList.remove('hide');
   sb.channel('db-main')
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>onIns(p.new))
