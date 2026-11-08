@@ -356,6 +356,8 @@ body.lite #fx,body.lite #splash img{animation:none}
 .lkp button{width:72px;height:72px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.14);color:#fff;font-size:26px;cursor:pointer}
 .lkp button:active{background:rgba(255,255,255,.35)}
 .lkx{display:block;margin:16px auto 0;background:none;border:0;color:#fff;opacity:.85;font-size:15px;cursor:pointer}
+#bgfx .snowf{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Cg stroke='white' stroke-width='4.5' stroke-linecap='round' fill='none'%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(0)'/%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(60)'/%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(120)'/%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(180)'/%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(240)'/%3E%3Cpath d='M0 0V-44M0-24L-10-34M0-24L10-34M0-35L-6-41M0-35L6-41' transform='rotate(300)'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;border-radius:0}
+.bdb{margin:8px 12px 0;padding:10px 14px;border-radius:20px;font-size:14px;text-align:center}
 </style>
 </head>
 <body>
@@ -455,6 +457,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 <div class="nm"><b id="ct"></b><small id="cst"></small></div>
 <button class="ib" id="pc" title="Ovozli qo‘ng‘iroq" disabled>📞</button>
 <button class="ib" id="vc" title="Videoqo‘ng‘iroq" disabled>📹</button>
+<button class="ib" id="cmn" title="Boshqa">⋮</button>
 </header>
 <header class="glass" id="selbar"><button class="ib" id="sel-x">✕</button><b id="selc" style="flex:1;padding-left:6px">0</b><button class="ib" id="sel-copy" title="Nusxalash">📋</button><button class="ib" id="sel-fw" title="Yo‘naltirish">↪</button><button class="ib" id="sel-del" title="O‘chirish">🗑</button></header>
 <div id="list"></div>
@@ -535,7 +538,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 </div>
 
 <script>
-const VER='v11';
+const VER='v12';
 const SB_URL='https://ilhxksrrfnxoomnaleyo.supabase.co';
 const SB_KEY='sb_publishable_BHVnn4xL-gpbRHYLWL7fkQ_sJFHcblM';
 const VAPID_PUB='BOsy5UXVVUvH3ZBiwB0cJv4NE18GIBHu8lnIp3zcR8qtoFQPWKe5pyWgWRmg-L8ZdzTYHcHw7mV-nerugF0fwpM';
@@ -732,8 +735,8 @@ let bgMode=LS.get('oasis_bgmode')||'grad';
 const rnd=(a,b)=>a+Math.random()*(b-a);
 function addMany(fx,n,fn){for(let i=0;i<n;i++){const e=document.createElement('div');fn(e,i);fx.appendChild(e)}}
 function waterLayer(fx){fx.appendChild(div('water'));fx.appendChild(div('wave w2'));fx.appendChild(div('wave'))}
-function applyBg(){
-  const fx=$('bgfx');fx.textContent='';const photo=LS.get('oasis_bg'),bd=document.body;
+function renderBg(bgMode,photo){
+  const fx=$('bgfx');fx.textContent='';const bd=document.body;
   const th=BGS.find(x=>x[0]===bgMode)||BGS[0];
   bd.classList.toggle('hasbg',bgMode==='photo'&&!!photo);
   ['--b1','--b2','--b3'].forEach((k,i)=>{if(th[2])bd.style.setProperty(k,th[2][i]);else bd.style.removeProperty(k)});
@@ -742,18 +745,41 @@ function applyBg(){
   if(bgMode==='hearts')addMany(fx,9,e=>{e.className='hrt';e.style.cssText='--sz:'+rnd(24,54)+'px;--d:'+rnd(5,10)+'s;left:'+rnd(0,88)+'%;top:'+rnd(52,88)+'%;animation-delay:-'+rnd(0,8)+'s;opacity:'+rnd(.3,.6)});
   if(bgMode==='love')addMany(fx,16,(e,i)=>{e.className='lv'+(i%3===0?' k':'');e.style.cssText='--l:'+rnd(0,92)+'%;--sz:'+rnd(18,52)+'px;--d:'+rnd(7,15)+'s;--x:'+rnd(-40,40)+'px;--o:'+rnd(.35,.8)+';animation-delay:-'+rnd(0,15)+'s'});
   if(bgMode==='sakura')addMany(fx,16,e=>{e.className='pt petal';e.style.cssText='--l:'+rnd(0,96)+'%;--sz:'+rnd(12,24)+'px;--d:'+rnd(9,17)+'s;--x:'+rnd(-90,90)+'px;--r:'+rnd(300,700)+'deg;--o:'+rnd(.5,.9)+';animation-delay:-'+rnd(0,17)+'s'});
-  if(bgMode==='snow')addMany(fx,26,e=>{e.className='pt flake';e.style.cssText='--l:'+rnd(0,98)+'%;--sz:'+rnd(3,9)+'px;--d:'+rnd(7,15)+'s;--x:'+rnd(-50,50)+'px;--r:0deg;--o:'+rnd(.5,.95)+';animation-delay:-'+rnd(0,15)+'s'});
+  if(bgMode==='snow')addMany(fx,22,e=>{e.className='pt snowf';e.style.cssText='--l:'+rnd(0,98)+'%;--sz:'+rnd(11,30)+'px;--d:'+rnd(9,18)+'s;--x:'+rnd(-60,60)+'px;--r:'+rnd(-420,420)+'deg;--o:'+rnd(.55,.95)+';animation-delay:-'+rnd(0,18)+'s'});
   if(bgMode==='stars'){addMany(fx,32,e=>{e.className='star';e.style.cssText='--l:'+rnd(0,98)+'%;--t:'+rnd(0,75)+'%;--sz:'+rnd(2,5)+'px;--d:'+rnd(2,6)+'s;animation-delay:-'+rnd(0,6)+'s'});const m=div('moon','🌙');fx.appendChild(m)}
 }
 function setBgMode(m){bgMode=m;LS.set('oasis_bgmode',m);applyBg()}
-function bgPicker(){const p=$('pop');p.textContent='';const c=div('pcard');
+let bgScope='global',lastBgKey='';
+function parseBg(v){if(!v)return null;if(String(v).indexOf('photo:')===0)return{mode:'photo',photo:String(v).slice(6)};return{mode:v,photo:null}}
+function effBg(){const c=cur!==null?chatById(cur):null,cb=c&&parseBg(c.bg);return cb||{mode:bgMode,photo:LS.get('oasis_bg')}}
+function applyBg(force){const e=effBg(),k=e.mode+'|'+(e.photo||'').slice(-40);if(!force&&k===lastBgKey)return;lastBgKey=k;renderBg(e.mode,e.photo)}
+async function setChatBg(v){if(cur===null)return false;const {error}=await sb.rpc('set_chat_bg',{cid:cur,v});
+  if(error){alert('Xato: '+error.message+'\n(Supabase’da yangi SQL ishga tushirilganmi?)');return false}
+  const c=chatById(cur);if(c)c.bg=v;applyBg();return true}
+function bgPicker(scope){bgScope=scope==='chat'?'chat':'global';const chat=bgScope==='chat',p=$('pop');p.textContent='';const c=div('pcard');
+  c.appendChild(div('sn',chat?'Chat foni — ikkalangizga ko‘rinadi':'Umumiy fon — faqat shu telefonda'));
+  const curMode=chat?((parseBg((chatById(cur)||{}).bg)||{}).mode||''):bgMode;
+  if(chat){const r=document.createElement('button');r.className='pa';r.textContent='↩ Umumiy fonga qaytarish';r.onclick=()=>{closePop();setChatBg(null)};c.appendChild(r)}
   BGS.forEach(([id,label,cols])=>{const b=document.createElement('button');b.className='pa';const sw=document.createElement('span');
     sw.style.cssText='display:inline-block;width:24px;height:24px;border-radius:8px;margin-right:12px;vertical-align:middle;border:1px solid var(--gb);background:'+(cols?'linear-gradient(135deg,'+cols.join(',')+')':'var(--me)');
-    b.append(sw,document.createTextNode(label+(bgMode===id?'  ✓':'')));b.onclick=()=>{closePop();if(id==='photo')$('bgf').click();else setBgMode(id)};c.appendChild(b)});
+    b.append(sw,document.createTextNode(label+(curMode===id?'  ✓':'')));
+    b.onclick=()=>{closePop();if(id==='photo')$('bgf').click();else if(chat)setChatBg(id);else setBgMode(id)};c.appendChild(b)});
   p.appendChild(c);p._t=Date.now();p.classList.remove('hide')}
-$('bgf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+$('bgf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  if(bgScope==='chat'){const blob=await shrink(f,1000,.8,false);if(!blob)return;const path=me.id+'/bg-'+Date.now()+'.jpg';
+    const up=await sb.storage.from('avatars').upload(path,blob,{contentType:'image/jpeg',upsert:true});
+    if(up.error){alert('Rasm yuklanmadi: '+up.error.message);return}
+    await setChatBg('photo:'+sb.storage.from('avatars').getPublicUrl(path).data.publicUrl);return}
   const img=new Image(),url=URL.createObjectURL(f);
   img.onload=()=>{const k=Math.min(1,1000/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);const u=c.toDataURL('image/jpeg',.78);URL.revokeObjectURL(url);LS.set('oasis_bg',u);setBgMode('photo')};img.src=url};
+$('cmn').onclick=()=>{const c=chatById(cur);if(!c)return;const p=$('pop');p.textContent='';const card=div('pcard');
+  const add=(t,f)=>{const b=document.createElement('button');b.className='pa';b.textContent=t;b.onclick=()=>{closePop();f()};card.appendChild(b)};
+  add('🎨 Chat foni (ikkalangizga)',()=>bgPicker('chat'));add('🔍 Chatda qidirish',chatFind);
+  if(c.kind==='dm')add('👤 Profilni ko‘rish',()=>openPeer(peerOf(c)));
+  p.appendChild(card);p._t=Date.now();p.classList.remove('hide')};
+function chatFind(){const q=(prompt('Qidirish:')||'').trim().toLowerCase();if(!q)return;
+  const a=(msgs[cur]||[]).filter(m=>!m.deleted&&m.body&&m.body.toLowerCase().includes(q));
+  if(!a.length){toast('Topilmadi (faqat yuklangan xabarlarda qidiriladi)');return}jumpTo(a[a.length-1].id);toast(a.length+' ta topildi')}
 
 /* ---------- profil ---------- */
 function renderMyAv(){
@@ -796,6 +822,7 @@ function buildProfile(uid){
   if(p.username||mine){card.appendChild(infoRow('Foydalanuvchi nomi',p.username?'@'+p.username:'Qo‘shish uchun bosing',mine?()=>openEdit():null));n++}
   if(p.birthday){card.appendChild(infoRow('Tug‘ilgan kun',p.birthday.split('-').reverse().join('.')));n++}
   if(mine&&me.email){card.appendChild(infoRow('Pochta',me.email));n++}
+  if(!mine){card.appendChild(infoRow('Ilova versiyasi',p.app_ver||'eski (v10 dan oldingi)'));n++}
   if(!mine){const dc=chats.find(x=>x.kind==='dm'&&peerOf(x)===uid);if(dc){const d=Math.max(1,Math.ceil((Date.now()-new Date(dc.created_at))/864e5));card.appendChild(infoRow('Suhbat',d+' kundan beri 💞'));n++}}
   if(n)w.appendChild(card);
   if(!mine){const d=div('pfx');
@@ -1006,7 +1033,7 @@ $('s-pin').onclick=()=>{if(LS.get('oasis_pin'))lockShow('off','O‘chirish uchun
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')hiddenAt=Date.now();
   else if(LS.get('oasis_pin')&&hiddenAt&&Date.now()-hiddenAt>20000&&$('lock').classList.contains('hide'))lockShow('check','PIN kodni kiriting',false)});
 $('s-new').onclick=()=>{const p=$('pop');p.textContent='';const c=div('pcard');c.appendChild(div('sn','Yangiliklar · '+VER));
-  ['🔒 PIN kod bilan qulflash','📌 Chatni tepaga qadash (chatni uzoq bosing)','🔍 Chatlarni qidirish','🌅 Yangi ikonka','💬 Pufak uslublari','💜 Xabarga ikki marta bosib yurakcha qo‘yish','😍 Emojilar jumbo stiker bo‘lib chiqadi'].forEach(t=>c.appendChild(div('pa',t)));
+  ['🎨 Chat foni endi ikkalangizga ko‘rinadi (chatda ⋮ → Chat foni)','❄️ Haqiqiy qor parchalari','✏️ Yuborilmay qolgan xabar (qoralama) saqlanadi','🎂 Tug‘ilgan kunda tabrik va konfeti','🔍 Chatda qidirish','ℹ️ Sherigingiz ilova versiyasi profilida ko‘rinadi','🔒 PIN kod · 📌 chatni qadash · 💜 ikki marta bosish'].forEach(t=>c.appendChild(div('pa',t)));
   const x=document.createElement('button');x.className='pa';x.textContent='Yopish';x.onclick=closePop;c.appendChild(x);p.appendChild(c);p._t=Date.now();p.classList.remove('hide')};
 function getPins(){try{return JSON.parse(LS.get('oasis_pins')||'[]')}catch(e){return[]}}
 function chatMenu(c){buzz(15);const p=$('pop');p.textContent='';const card=div('pcard');card.appendChild(div('sn',disp(c).title));
@@ -1038,7 +1065,7 @@ function renderList(){
     const mid=div('mid');const b=document.createElement('b');b.textContent=d.title;if(pins.includes(c.id)){const pn=document.createElement('span');pn.className='kind';pn.textContent='📌';b.appendChild(pn)}
     if(c.kind!=='dm'){const k=document.createElement('span');k.className='kind';k.textContent=c.kind==='channel'?'kanal':'guruh';b.appendChild(k)}
     const l=lastOf(c.id),ty=typing[c.id]&&Date.now()-typing[c.id]<3500;
-    const pv=div('pv'+(ty?' ty':''));if(ty)pv.textContent='yozmoqda…';else if(l){pv.appendChild(document.createTextNode((l.sender===me.id?'Siz: ':'')));rich(pv,preview(l))}else pv.textContent='Xabar yo‘q';
+    const pv=div('pv'+(ty?' ty':''));const dr=LS.get('oasis_draft_'+c.id);if(ty)pv.textContent='yozmoqda…';else if(dr&&cur!==c.id){pv.textContent='✏️ Qoralama: '+dr.slice(0,60)}else if(l){pv.appendChild(document.createTextNode((l.sender===me.id?'Siz: ':'')));rich(pv,preview(l))}else pv.textContent='Xabar yo‘q';
     mid.append(b,pv);
     const rt=div('rt');rt.appendChild(div('',l?fmt(l.created_at):''));const u=unreadOf(c.id);if(u)rt.appendChild(div('bd',String(u)));
     it.append(mid,rt);
@@ -1124,7 +1151,7 @@ function pickMember(c){
     r.onclick=async()=>{closePop();const {data,error}=await sb.from('chats').update({members:[...(c.members||[]),x.id]}).eq('id',c.id).select().single();if(error){toast('Xato: '+error.message);return}chatUpsert(data);toast(pName(x.id)+' qo‘shildi ✓')};card.appendChild(r)});
   p.appendChild(card);p._t=Date.now();p.classList.remove('hide')}
 async function delChat(c){const {error}=await sb.from('chats').delete().eq('id',c.id);if(error)alert('Xato: '+error.message)}
-function chatUpsert(c){const i=chats.findIndex(x=>x.id===c.id);if(i>=0)chats[i]=c;else chats.push(c);renderListSoon();if(cur===c.id)setHead(c)}
+function chatUpsert(c){const i=chats.findIndex(x=>x.id===c.id);if(i>=0)chats[i]=c;else chats.push(c);renderListSoon();if(cur===c.id){setHead(c);applyBg()}}
 function chatRemove(id){chats=chats.filter(c=>c.id!==id);delete msgs[id];if(cur===id)closeChat(false);renderListSoon()}
 async function openDM(u){const {data,error}=await sb.rpc('open_dm',{peer:u});if(error){alert('Xato: '+error.message);return}
   if(!chatById(data)){const r=await sb.from('chats').select('*').eq('id',data).single();if(r.data)chatUpsert(r.data)}
@@ -1163,12 +1190,12 @@ function renderChat(){
 }
 function openChat(id){
   if(!fetchedChat[id]){fetchedChat[id]=true;loadLatest(id,80)}
-  const c=chatById(id);if(!c)return;exitSel();cur=id;setHead(c);clearReply();cancelEditUI();limit=60;unreadFirst=((msgs[id]||[]).find(m=>m.sender!==me.id&&!m.read_at&&!m.deleted)||{}).id||0;renderChat();
+  const c=chatById(id);if(!c)return;exitSel();cur=id;setHead(c);applyBg();verWarn(c);clearReply();cancelEditUI();inp.value=LS.get('oasis_draft_'+id)||'';resize();updIcon();limit=60;unreadFirst=((msgs[id]||[]).find(m=>m.sender!==me.id&&!m.read_at&&!m.deleted)||{}).id||0;renderChat();
   if(typing[id]&&Date.now()-typing[id]<3500)showTyping();
   list.scrollTop=list.scrollHeight;stickUntil=Date.now()+2000;[0,60,200,500,1000,1600].forEach(ms=>setTimeout(()=>{if(cur===id&&Date.now()<stickUntil)toBottom()},ms));
   if(!$('app').classList.contains('inchat'))history.pushState({c:id},'');$('app').classList.add('inchat');markRead();
 }
-function closeChat(fromBtn){if(fromBtn){history.back();return}exitSel();cur=null;unreadFirst=0;$('app').classList.remove('inchat');$('emo').classList.add('hide');$('emb').textContent='😊';renderListSoon()}
+function closeChat(fromBtn){if(fromBtn){history.back();return}exitSel();cur=null;applyBg();unreadFirst=0;$('app').classList.remove('inchat');$('emo').classList.add('hide');$('emb').textContent='😊';renderListSoon()}
 window.addEventListener('popstate',()=>{if(overlays.length){const f=overlays.pop();f();if(afterPop){const g=afterPop;afterPop=null;setTimeout(g,30)}return}if(cur!==null)closeChat(false)});
 $('back').onclick=()=>closeChat(true);
 
@@ -1331,7 +1358,7 @@ $('rbx').onclick=()=>{replyTo=null;cancelEditUI()};
 function resize(){inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,120)+'px'}
 let icoState='';
 function updIcon(){const s=(inp.value.trim()||editing)?(editing?'✓':'↑'):'🎤';if(s!==icoState){icoState=s;const b=$('send');b.textContent=s;b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')}}
-inp.addEventListener('input',()=>{resize();updIcon();if(inp.value.trim()&&!editing)sendTyping()});
+inp.addEventListener('input',()=>{resize();updIcon();if(inp.value.trim()&&!editing)sendTyping();if(cur!==null&&!editing){const t=inp.value;if(t.trim())LS.set('oasis_draft_'+cur,t);else LS.del('oasis_draft_'+cur)}});
 inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&window.innerWidth>700){e.preventDefault();sendText()}});
 async function insert(o){const {data,error}=await sb.from('messages').insert({chat_id:cur,sender:me.id,...o}).select().single();if(error){st.textContent='yuborib bo‘lmadi';log('insert xato: '+error.message);return false}onIns(data);return true}
 async function sendText(){
@@ -1339,7 +1366,7 @@ async function sendText(){
   if(editing){const m=editing,nb=t.slice(0,2000);editing=null;inp.value='';resize();updIcon();$('rbar').classList.add('hide');
     if(nb!==m.body){const iso=new Date().toISOString();const {error}=await sb.from('messages').update({body:nb,edited_at:iso}).eq('id',m.id);
       if(!error){m.body=nb;m.edited_at=iso;const e=els.get(m.id);if(e)fill(e,m);renderListSoon()}}return}
-  sendSound();fxFor(t);inp.value='';resize();const rt=replyTo;clearReply();updIcon();
+  LS.del('oasis_draft_'+cur);sendSound();fxFor(t);inp.value='';resize();const rt=replyTo;clearReply();updIcon();
   await insert({body:t.slice(0,2000),reply_to:rt?rt.id:null});
 }
 $('send').onclick=()=>{if(inp.value.trim()||editing)sendText();else vrStart()};
@@ -1436,7 +1463,13 @@ async function markRead(){
   const iso=new Date().toISOString();const {error}=await sb.from('messages').update({read_at:iso}).in('id',ids);
   if(!error){ids.forEach(i=>{const m=byId.get(i);if(m)m.read_at=iso});renderListSoon()}
 }
-function touchSeen(){if(!me)return;sb.from('profiles').update({last_seen:new Date().toISOString()}).eq('id',me.id).then(()=>{},()=>{})}
+let verSent=false;
+function touchSeen(){if(!me)return;sb.from('profiles').update({last_seen:new Date().toISOString()}).eq('id',me.id).then(()=>{},()=>{});
+  if(!verSent){verSent=true;sb.from('profiles').update({app_ver:VER}).eq('id',me.id).then(()=>{},()=>{})}}
+const vnum=v=>{const m=/v(\d+(?:\.\d+)?)/.exec(v||'');return m?parseFloat(m[1]):0};
+const verWarned={};
+function verWarn(c){if(!c||c.kind!=='dm')return;const u=peerOf(c),pr=profiles.get(u);if(!pr||verWarned[u])return;verWarned[u]=1;
+  if(vnum(pr.app_ver)<vnum(VER))toast('Sherigingizning ilovasi eski ('+(pr.app_ver||'v10 dan oldingi')+'). Fon va yangi funksiyalar unda ko‘rinmasligi mumkin, uni yangilash kerak.')}
 async function authRt(){try{const {data}=await sb.auth.getSession();await sb.realtime.setAuth(data.session.access_token)}catch(e){log('setAuth xato '+e)}}
 async function setupLive(){
   await authRt();if(live){try{await sb.removeChannel(live)}catch(e){}}
@@ -1468,6 +1501,12 @@ $('s-push').onclick=enablePush;$('nbb').onclick=enablePush;
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('oasis-sw.js').catch(()=>{}));
   navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.open)openChat(Number(e.data.open))})}
 
+function checkBirthdays(){
+  const t=new Date(),md=String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0'),day=t.toDateString(),names=[];
+  profiles.forEach(pp=>{if(pp.birthday&&String(pp.birthday).slice(5)===md)names.push(pp.id===me.id?'sizning':(pp.name||'Kontakt')+'ning')});
+  const old=$('bdb');if(old)old.remove();if(!names.length)return;
+  const b=div('bdb glass','🎂 Bugun '+names.join(', ')+' tug‘ilgan kuni! 🎉');b.id='bdb';const ref=$('csrow');if(ref&&ref.parentNode)ref.parentNode.insertBefore(b,ref);
+  if(LS.get('oasis_bd')!==day){LS.set('oasis_bd',day);setTimeout(()=>burst(['🎉','🎂','🎈','✨'],10),600)}}
 async function loadUnread(){
   const {data}=await sb.from('messages').select('*').is('read_at',null).neq('sender',me.id).eq('deleted',false).order('id',{ascending:false}).limit(300);
   if(!data||!data.length)return;const by={};data.forEach(m=>{(by[m.chat_id]=by[m.chat_id]||[]).push(m)});
@@ -1480,7 +1519,7 @@ async function start(user){
   chats=cr.data;pr.data.forEach(p=>profiles.set(p.id,p));(kr.data||[]).forEach(x=>contactIds.add(x.contact_id));(br.data||[]).forEach(x=>blockedIds.add(x.blocked));myP=profiles.get(me.id)||{id:me.id,name:(me.email||'').split('@')[0]};
   mr.data.reverse().forEach(m=>{if(m.chat_id==null)return;(msgs[m.chat_id]=msgs[m.chat_id]||[]).push(m);byId.set(m.id,m)});
   renderMyAv();renderList();touchSeen();loadMedia();hideSplash();
-  chats.forEach(c=>{if(!(msgs[c.id]&&msgs[c.id].length))loadLatest(c.id,3)});loadUnread();
+  chats.forEach(c=>{if(!(msgs[c.id]&&msgs[c.id].length))loadLatest(c.id,3)});loadUnread();checkBirthdays();
   if(pushOK()&&Notification.permission==='default')$('nbn').classList.remove('hide');
   sb.channel('db-main')
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>onIns(p.new))
