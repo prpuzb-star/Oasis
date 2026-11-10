@@ -365,6 +365,14 @@ body.lite #fx,body.lite #splash img{animation:none}
 #updb{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:80;padding:10px 14px;border-radius:20px;display:flex;align-items:center;gap:10px;font-size:14px}
 #updb span{flex:1}#updb button{border:0;background:var(--me);color:#fff;border-radius:14px;padding:7px 14px;cursor:pointer}
 .t code{font-family:ui-monospace,Menlo,monospace;background:rgba(0,0,0,.18);padding:1px 5px;border-radius:6px;font-size:.92em}
+#bgfx .pt.rain{width:2px;height:calc(var(--sz) * 1.6);border-radius:2px;background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.75))}
+#bgfx .pt.leaf{height:calc(var(--sz) * .75);background:var(--lc,#e8903a);border-radius:2px 80% 2px 80%}
+#bgfx .bub,#bgfx .spark{position:absolute;bottom:-12vh;left:var(--l);width:var(--sz);height:var(--sz);border-radius:50%;opacity:var(--o);will-change:transform}
+#bgfx .bub{border:1.5px solid rgba(255,255,255,.65);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55),rgba(255,255,255,.08));animation:rise var(--d) ease-in infinite}
+#bgfx .spark{background:radial-gradient(circle,#ffe29a,#ff8a2a 55%,rgba(255,138,42,0) 72%);animation:rise var(--d) linear infinite}
+#bgfx .ffly{position:absolute;left:var(--l);top:var(--t);width:var(--sz);height:var(--sz);border-radius:50%;background:#eaff9d;box-shadow:0 0 9px 3px rgba(234,255,157,.55);animation:ffl var(--d) ease-in-out infinite;will-change:transform,opacity}
+@keyframes ffl{0%,100%{opacity:.15;transform:translate3d(0,0,0) scale(.8)}50%{opacity:1;transform:translate3d(var(--x,8px),-14px,0) scale(1.15)}}
+body.idle #bgfx *,body.idle .m.bob,body.idle .typ i,body.eco #bgfx *,body.eco .m.bob{animation-play-state:paused!important}
 </style>
 </head>
 <body>
@@ -431,6 +439,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 <div class="sgrp glass">
 <button class="srow" id="s-lite"><span class="si">⚡</span><span class="sl">Yengil rejim</span><i class="sw"></i></button>
 <button class="srow" id="s-bga"><span class="si">✨</span><span class="sl">Fon animatsiyalari</span><i class="sw"></i></button>
+<button class="srow" id="s-eco"><span class="si">🔋</span><span class="sl">Eko rejim (batareya kam bo‘lsa)</span><i class="sw"></i></button>
 <button class="srow" id="s-blur"><span class="si">💎</span><span class="sl">Shisha effekti</span><i class="sw"></i></button>
 </div>
 <div class="sgrp glass">
@@ -548,7 +557,7 @@ body.lite #fx,body.lite #splash img{animation:none}
 </div>
 
 <script>
-const VER='v14';
+const VER='v15';
 const SB_URL='https://ilhxksrrfnxoomnaleyo.supabase.co';
 const SB_KEY='sb_publishable_BHVnn4xL-gpbRHYLWL7fkQ_sJFHcblM';
 const VAPID_PUB='BOsy5UXVVUvH3ZBiwB0cJv4NE18GIBHu8lnIp3zcR8qtoFQPWKe5pyWgWRmg-L8ZdzTYHcHw7mV-nerugF0fwpM';
@@ -563,7 +572,9 @@ let me=null,myP=null,profiles=new Map(),chats=[],msgs={},byId=new Map(),els=new 
 
 /* ---------- tovush ---------- */
 let ac=null,master=null,soundOn=LS.get('oasis_snd')!=='off';
-function actx(){if(!ac){const C=window.AudioContext||window.webkitAudioContext;if(C)ac=new C()}if(ac&&ac.state==='suspended')ac.resume();return ac}
+let acT=null;
+function actx(){if(!ac){const C=window.AudioContext||window.webkitAudioContext;if(C)ac=new C()}
+  if(ac){if(ac.state==='suspended')ac.resume();clearTimeout(acT);acT=setTimeout(()=>{try{if(ac&&ac.state==='running')ac.suspend()}catch(e){}},3500)}return ac}
 document.addEventListener('pointerdown',actx);
 function out(c){if(master)return master;const m=c.createGain(),d=c.createDelay(),fb=c.createGain();d.delayTime.value=.14;fb.gain.value=.3;m.connect(c.destination);m.connect(d);d.connect(fb);fb.connect(d);d.connect(c.destination);return master=m}
 function tone(c,t,f1,f2,vol,dur){const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+dur*.55);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(out(c));o.start(t);o.stop(t+dur+.05)}
@@ -584,11 +595,16 @@ const PE=new Set(CATS.flatMap(c=>c.l));
 const PLAIN=Array.from('💞❣🧿🪄🧸🪩🛍🏖🏝🌅🌆🌃🏙🎡🎢🛳⛵🚤🛶🪁🎭🎨🧩♟🎲🎰🎳📚✏📝📌📎🔒🧲🕯🪞🛏🛁🧴🪥☎📞📺📻⏰⌛🌡🧭🏳🏴');
 const peRe=/((?![\u00A9\u00AE])\p{Extended_Pictographic}(?:\uFE0F|[\u{1F3FB}-\u{1F3FF}])?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|[\u{1F3FB}-\u{1F3FF}])?)*)/gu;
 const hex=ch=>Array.from(ch).map(c=>c.codePointAt(0).toString(16)).join('_');
-const PE_Q=[];let peBusy=0;
-function peLoad(){while(peBusy<4&&PE_Q.length){const j=PE_Q.shift();if(!j.sp.isConnected)continue;peBusy++;const im=new Image();im.decoding='async';im.className='pe';im.alt=j.ch;
-  im.onload=()=>{peBusy--;if(j.sp.isConnected)j.sp.replaceWith(im);peLoad()};im.onerror=()=>{peBusy--;peLoad()};im.src=j.url}}
+const PE_Q=[];let peBusy=0,activeGif=0;
+const gifCap=()=>lite==='on'?14:36;
+function peLoad(){while(peBusy<4&&PE_Q.length){const j=PE_Q.shift();if(!j.sp.isConnected)continue;
+  if(activeGif>=gifCap()&&!j.big){j.tries=(j.tries||0)+1;if(j.tries<6)setTimeout(()=>{if(j.sp.isConnected){PE_Q.push(j);peLoad()}},2500);continue}
+  peBusy++;const im=new Image();im.decoding='async';im.className='pe';im.alt=j.ch;
+  im.onload=()=>{peBusy--;if(j.sp.isConnected){j.sp.replaceWith(im);activeGif++;if(j.lz&&peOut){im._j=j;peOut.observe(im)}}peLoad()};
+  im.onerror=()=>{peBusy--;peLoad()};im.src=j.url}}
 const peIO='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){peIO.unobserve(e.target);const j=e.target._pe;if(j){PE_Q.push(j);peLoad()}}}),{root:list,rootMargin:'320px'}):null;
-function peNode(ch,lz){const sp=document.createElement('span');sp.className='pf';sp.textContent=ch;const j={ch,sp,url:'https://fonts.gstatic.com/s/e/notoemoji/latest/'+hex(ch)+'/512.gif'};
+const peOut='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting){const im=e.target,j=im._j;peOut.unobserve(im);if(j&&im.isConnected){activeGif=Math.max(0,activeGif-1);im.replaceWith(j.sp);if(peIO)peIO.observe(j.sp)}}}),{root:list,rootMargin:'700px'}):null;
+function peNode(ch,lz,big){const sp=document.createElement('span');sp.className='pf';sp.textContent=ch;const j={ch,sp,lz:!!lz,big:!!big,url:'https://fonts.gstatic.com/s/e/notoemoji/latest/'+hex(ch)+'/512.gif'};
   if(lz&&peIO){sp._pe=j;peIO.observe(sp)}else{PE_Q.push(j);setTimeout(peLoad,0)}return sp}
 function fmtNodes(el,str){const re=/(`[^`\n]+`|(?<![\w*])\*[^\s*](?:[^*\n]*[^\s*])?\*(?![\w*])|(?<![\w])_[^\s_](?:[^_\n]*[^\s_])?_(?![\w])|(?<![\w~])~[^\s~](?:[^~\n]*[^\s~])?~(?![\w~]))/g;
   str.split(re).forEach((x,i)=>{if(!x)return;if(i%2){const t=x[0],n=document.createElement(t==='`'?'code':t==='*'?'b':t==='~'?'s':'i');n.textContent=x.slice(1,-1);el.appendChild(n)}else el.appendChild(document.createTextNode(x))})}
@@ -719,6 +735,15 @@ let bga=LS.get('oasis_bga')!=='off';
 function applyBga(){document.body.classList.toggle('noanim',!bga);setSw('s-bga',bga)}
 $('s-bga').onclick=()=>{bga=!bga;LS.set('oasis_bga',bga?'on':'off');applyBga();applyBg(true)};
 applyBga();
+let idleT=null;
+function wake(){if(document.body.classList.contains('idle'))document.body.classList.remove('idle');clearTimeout(idleT);idleT=setTimeout(()=>document.body.classList.add('idle'),20000)}
+['pointerdown','touchstart','keydown'].forEach(ev=>document.addEventListener(ev,wake,{passive:true}));
+document.addEventListener('scroll',wake,{capture:true,passive:true});wake();
+let ecoOn=LS.get('oasis_eco')!=='off',batt=null;
+function applyEco(){const low=batt&&!batt.charging&&batt.level<.25;document.body.classList.toggle('eco',!!(ecoOn&&low));setSw('s-eco',ecoOn)}
+$('s-eco').onclick=()=>{ecoOn=!ecoOn;LS.set('oasis_eco',ecoOn?'on':'off');applyEco()};
+if(navigator.getBattery)navigator.getBattery().then(b=>{batt=b;applyEco();b.addEventListener('levelchange',applyEco);b.addEventListener('chargingchange',applyEco)}).catch(()=>{});
+applyEco();
 let blur=LS.get('oasis_blur')==='on';
 function applyBlur(){document.body.classList.toggle('blur',blur);setSw('s-blur',blur)}
 $('s-blur').onclick=()=>{blur=!blur;LS.set('oasis_blur',blur?'on':'off');applyBlur()};
@@ -746,6 +771,21 @@ const BGS=[
  ['ocean','🐚 Okean',['#2ad0ff','#0b72ff','#06235c']],
  ['forest','🌿 O‘rmon',['#c4f5b8','#3dbb75','#0c4f3d']],
  ['snow','❄️ Qor',['#d6ecff','#9fc9f7','#5a7fc9']],
+ ['rain','🌧 Yomg‘ir',['#a9bccd','#647f98','#2b3a4a']],
+ ['leaves','🍂 Kuz barglari',['#ffe7bd','#f2a65a','#b5532b']],
+ ['bubbles','🫧 Pufakchalar',['#d4f3ff','#82cdf6','#4b7cf0']],
+ ['fire','🔥 Uchqunlar',['#2b0a0a','#7a1d0e','#e8590c']],
+ ['fireflies','✨ Yaltiroq qo‘ng‘izlar',['#071a14','#0d3b2e','#1f6f55']],
+ ['galaxy','🪐 Galaktika',['#12002b','#3b0d6e','#c2368f']],
+ ['peach','🍑 Shaftoli',['#ffe6d6','#ffb9a0','#ff8fa3']],
+ ['mint','🍃 Yalpiz',['#e2fbee','#9be7c4','#4fb7a8']],
+ ['lavender','💜 Lavanda',['#f1e7ff','#c8b3ff','#8f7cf0']],
+ ['sky','☁️ Osmon',['#e9f6ff','#a9d6ff','#6aa8ff']],
+ ['gold','🌤 Oltin tong',['#fff3d2','#ffc983','#ff8a65']],
+ ['coffee','☕ Qahva',['#f3e6d8','#c49a7a','#6b4632']],
+ ['berry','🫐 Rezavor',['#5b2a86','#9b3d9e','#e0527a']],
+ ['night','🌃 Tungi shahar',['#0b132b','#1c2541','#3a506b']],
+ ['amoled','⚫ Qora (AMOLED, batareyani tejaydi)',['#000000','#07070b','#12121c']],
  ['photo','🖼 O‘z rasmim',null]];
 let bgMode=LS.get('oasis_bgmode')||'grad';
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -758,11 +798,16 @@ function renderBg(bgMode,photo){
   ['--b1','--b2','--b3'].forEach((k,i)=>{if(th[2])bd.style.setProperty(k,th[2][i]);else bd.style.removeProperty(k)});
   if(bgMode==='photo'&&photo){$('bg').style.backgroundImage='url('+photo+')';return}
   if(bgMode==='water'||bgMode==='hearts')waterLayer(fx);
-  if(bgMode==='hearts')addMany(fx,9,e=>{e.className='hrt';e.style.cssText='--sz:'+rnd(24,54)+'px;--d:'+rnd(5,10)+'s;left:'+rnd(0,88)+'%;top:'+rnd(52,88)+'%;animation-delay:-'+rnd(0,8)+'s;opacity:'+rnd(.3,.6)});
-  if(bgMode==='love')addMany(fx,16,(e,i)=>{e.className='lv'+(i%3===0?' k':'');e.style.cssText='--l:'+rnd(0,92)+'%;--sz:'+rnd(18,52)+'px;--d:'+rnd(7,15)+'s;--x:'+rnd(-40,40)+'px;--o:'+rnd(.35,.8)+';animation-delay:-'+rnd(0,15)+'s'});
-  if(bgMode==='sakura')addMany(fx,16,e=>{e.className='pt petal';e.style.cssText='--l:'+rnd(0,96)+'%;--sz:'+rnd(12,24)+'px;--d:'+rnd(9,17)+'s;--x:'+rnd(-90,90)+'px;--r:'+rnd(300,700)+'deg;--o:'+rnd(.5,.9)+';animation-delay:-'+rnd(0,17)+'s'});
-  if(bgMode==='snow')addMany(fx,22,e=>{e.className='pt snowf';e.style.cssText='--l:'+rnd(0,98)+'%;--sz:'+rnd(11,30)+'px;--d:'+rnd(9,18)+'s;--x:'+rnd(-60,60)+'px;--r:'+rnd(-420,420)+'deg;--o:'+rnd(.55,.95)+';animation-delay:-'+rnd(0,18)+'s'});
-  if(bgMode==='stars'){addMany(fx,32,e=>{e.className='star';e.style.cssText='--l:'+rnd(0,98)+'%;--t:'+rnd(0,75)+'%;--sz:'+rnd(2,5)+'px;--d:'+rnd(2,6)+'s;animation-delay:-'+rnd(0,6)+'s'});const m=div('moon','🌙');fx.appendChild(m)}
+  if(bgMode==='hearts')addMany(fx,7,e=>{e.className='hrt';e.style.cssText='--sz:'+rnd(24,54)+'px;--d:'+rnd(5,10)+'s;left:'+rnd(0,88)+'%;top:'+rnd(52,88)+'%;animation-delay:-'+rnd(0,8)+'s;opacity:'+rnd(.3,.6)});
+  if(bgMode==='love')addMany(fx,12,(e,i)=>{e.className='lv'+(i%3===0?' k':'');e.style.cssText='--l:'+rnd(0,92)+'%;--sz:'+rnd(18,52)+'px;--d:'+rnd(7,15)+'s;--x:'+rnd(-40,40)+'px;--o:'+rnd(.35,.8)+';animation-delay:-'+rnd(0,15)+'s'});
+  if(bgMode==='sakura')addMany(fx,12,e=>{e.className='pt petal';e.style.cssText='--l:'+rnd(0,96)+'%;--sz:'+rnd(12,24)+'px;--d:'+rnd(9,17)+'s;--x:'+rnd(-90,90)+'px;--r:'+rnd(300,700)+'deg;--o:'+rnd(.5,.9)+';animation-delay:-'+rnd(0,17)+'s'});
+  if(bgMode==='snow')addMany(fx,16,e=>{e.className='pt snowf';e.style.cssText='--l:'+rnd(0,98)+'%;--sz:'+rnd(11,30)+'px;--d:'+rnd(9,18)+'s;--x:'+rnd(-60,60)+'px;--r:'+rnd(-420,420)+'deg;--o:'+rnd(.55,.95)+';animation-delay:-'+rnd(0,18)+'s'});
+  if(bgMode==='rain')addMany(fx,22,e=>{e.className='pt rain';e.style.cssText='--l:'+rnd(0,100)+'%;--sz:'+rnd(14,30)+'px;--d:'+rnd(.9,1.8)+'s;--x:'+rnd(-14,-4)+'px;--r:0deg;--o:'+rnd(.25,.6)+';animation-delay:-'+rnd(0,2)+'s'});
+  if(bgMode==='leaves')addMany(fx,12,e=>{e.className='pt leaf';e.style.cssText='--l:'+rnd(0,96)+'%;--sz:'+rnd(14,26)+'px;--d:'+rnd(8,15)+'s;--x:'+rnd(-110,110)+'px;--r:'+rnd(300,720)+'deg;--o:'+rnd(.6,.95)+';--lc:'+['#e8903a','#d9622b','#f2c14e','#b5532b'][Math.floor(rnd(0,4))]+';animation-delay:-'+rnd(0,15)+'s'});
+  if(bgMode==='bubbles')addMany(fx,12,e=>{e.className='bub';e.style.cssText='--l:'+rnd(0,92)+'%;--sz:'+rnd(16,56)+'px;--d:'+rnd(8,16)+'s;--x:'+rnd(-40,40)+'px;--o:'+rnd(.45,.9)+';animation-delay:-'+rnd(0,16)+'s'});
+  if(bgMode==='fire')addMany(fx,16,e=>{e.className='spark';e.style.cssText='--l:'+rnd(0,96)+'%;--sz:'+rnd(4,12)+'px;--d:'+rnd(4,9)+'s;--x:'+rnd(-50,50)+'px;--o:'+rnd(.55,1)+';animation-delay:-'+rnd(0,9)+'s'});
+  if(bgMode==='fireflies')addMany(fx,14,e=>{e.className='ffly';e.style.cssText='--l:'+rnd(0,96)+'%;--t:'+rnd(10,92)+'%;--sz:'+rnd(3,7)+'px;--d:'+rnd(3,7)+'s;--x:'+rnd(-16,16)+'px;animation-delay:-'+rnd(0,7)+'s'});
+  if(bgMode==='stars'||bgMode==='galaxy'){addMany(fx,24,e=>{e.className='star';e.style.cssText='--l:'+rnd(0,98)+'%;--t:'+rnd(0,75)+'%;--sz:'+rnd(2,5)+'px;--d:'+rnd(2,6)+'s;animation-delay:-'+rnd(0,6)+'s'});const m=div('moon','🌙');fx.appendChild(m)}
 }
 function setBgMode(m){bgMode=m;LS.set('oasis_bgmode',m);applyBg()}
 let bgScope='global',lastBgKey='';
@@ -1089,7 +1134,7 @@ $('s-pin').onclick=()=>{if(LS.get('oasis_pin'))lockShow('off','O‘chirish uchun
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')hiddenAt=Date.now();
   else if(LS.get('oasis_pin')&&hiddenAt&&Date.now()-hiddenAt>20000&&$('lock').classList.contains('hide'))lockShow('check','PIN kodni kiriting',false)});
 $('s-new').onclick=()=>{const p=$('pop');p.textContent='';const c=div('pcard');c.appendChild(div('sn','Yangiliklar · '+VER));
-  ['🔄 Yangi versiya chiqsa, ilova o‘zi xabar beradi','⭐ Sevimli xabarlar (xabarni bosing)','📍 Joylashuvni yuborish (＋ tugmasi)','📊 Chat statistikasi (chatda ⋮)','💾 Chatni matn faylga saqlash (chatda ⋮)','🕘 So‘nggi ishlatilgan emojilar','✍️ *qalin* _qiya_ ~chizilgan~ `kod` yozish','🌸 Fon zarrachalari hamma telefonda ko‘rinadi','📌 Xabarni chatga qadash'].forEach(t=>c.appendChild(div('pa',t)));
+  ['⚡ Tezroq va sovuqroq: bo‘sh turganda fon animatsiyasi to‘xtaydi','🔋 Eko rejim: batareya kam bo‘lsa animatsiya to‘xtaydi','🎞 Harakatlanuvchi emojilar faqat ko‘ringanda ishlaydi','🌧 20 dan ortiq yangi fon: yomg‘ir, kuz barglari, pufakchalar, uchqunlar, qo‘ng‘izlar, galaktika, AMOLED...','🔄 Yangi versiya chiqsa, ilova o‘zi xabar beradi','⭐ Sevimli xabarlar · 📍 joylashuv · 📊 statistika · 💾 saqlash'].forEach(t=>c.appendChild(div('pa',t)));
   const x=document.createElement('button');x.className='pa';x.textContent='Yopish';x.onclick=closePop;c.appendChild(x);p.appendChild(c);p._t=Date.now();p.classList.remove('hide')};
 function getPins(){try{return JSON.parse(LS.get('oasis_pins')||'[]')}catch(e){return[]}}
 function chatMenu(c){buzz(15);const p=$('pop');p.textContent='';const card=div('pcard');card.appendChild(div('sn',disp(c).title));
@@ -1244,7 +1289,7 @@ async function loadLatest(cid,n){const {data,error}=await sb.from('messages').se
 async function loadOlder(){const cid=cur,arr=msgs[cid]||[];let q=sb.from('messages').select('*').eq('chat_id',cid).order('id',{ascending:false}).limit(200);if(arr.length)q=q.lt('id',arr[0].id);
   const {data,error}=await q;if(error){toast('Xato: '+error.message);return}if(data.length<200)noMore[cid]=true;
   const added=mergeMsgs(cid,data);limit+=Math.max(added,100);const oh=list.scrollHeight;renderChat();list.scrollTop=list.scrollHeight-oh}
-function renderChat(){
+function renderChat(){activeGif=0;
   list.textContent='';els.clear();lastEl=null;lastM=null;recent=[];
   const a=(msgs[cur]||[]).filter(visMsg),start=Math.max(0,a.length-limit);
   if(start>0||!noMore[cur]){const b=document.createElement('button');b.className='tab';b.style.alignSelf='center';b.textContent='⬆ Oldingi xabarlar'+(start>0?' ('+start+')':'');b.onclick=()=>{if(start>0){limit+=100;const oh=list.scrollHeight;renderChat();list.scrollTop=list.scrollHeight-oh}else loadOlder()};list.appendChild(b)}
@@ -1308,7 +1353,7 @@ function fill(el,m){
       else if(m.media_kind==='video'){const t=div('vtile','▶');t.onclick=async e=>{e.stopPropagation();const u=await mediaUrl(m.media_path);if(!u)return;const v=document.createElement('video');v.controls=true;v.playsInline=true;v.autoplay=true;v.src=u;t.replaceWith(v)};el.appendChild(t)}
       else if(m.media_kind==='audio')el.appendChild(voiceEl(m))}
     if(m.body){const bt=cleanBody(m.body);if(bt){const eo=(!m.reply_to&&!m.media_path)?emojiOnly(bt):null;
-      if(eo){const n=eo.length,t=div('t emo'+(n>10?' sm':''));t.style.setProperty('--es',(n===1?128:n===2?104:n===3?90:n<=5?72:n<=8?58:n<=10?50:30)+'px');if(n<=10)el.classList.add('jumbo');eo.slice(0,150).forEach(ch=>t.appendChild(peNode(ch,true)));el.appendChild(t)}
+      if(eo){const n=eo.length,t=div('t emo'+(n>10?' sm':''));t.style.setProperty('--es',(n===1?128:n===2?104:n===3?90:n<=5?72:n<=8?58:n<=10?50:30)+'px');if(n<=10)el.classList.add('jumbo');eo.slice(0,150).forEach(ch=>t.appendChild(peNode(ch,true,n<=10)));el.appendChild(t)}
       else{const t=div('t');rich(t,bt,true);el.appendChild(t)}}}
   }
   const s=div('ts');if(m.edited_at&&!m.deleted)s.appendChild(div('','tahrirlangan'));s.appendChild(div('',fmt(m.created_at)));
@@ -1516,7 +1561,7 @@ $('rb').onclick=()=>{
 $('rx').onclick=()=>{if(rmr&&rmr.state==='recording'){rcancel=true;rmr.stop()}else closeRec()};
 
 /* ---------- ma'lumotlar va realtime ---------- */
-function onIns(m){
+function onIns(m){wake();
   if(byId.has(m.id))return;(msgs[m.chat_id]=msgs[m.chat_id]||[]).push(m);byId.set(m.id,m);
   const mine=m.sender===me.id;
   if(!mine){delete typing[m.chat_id];if(cur===m.chat_id){hideTyping();refreshChatStatus()}}
