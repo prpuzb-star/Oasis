@@ -410,6 +410,35 @@ body.idle #bgfx *,body.idle .m.bob,body.idle .typ i,body.eco #bgfx *,body.eco .m
 .wte button{font-size:26px;background:rgba(255,255,255,.12);border:0;border-radius:50%;width:48px;height:48px;cursor:pointer}
 .wfloat{position:absolute;bottom:110px;font-size:36px;animation:rise2 2.2s ease-out forwards;pointer-events:none;z-index:3}
 @keyframes rise2{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:1}100%{transform:translateY(-300px) scale(1.3);opacity:0}}
+.fseg{background:rgba(255,255,255,.14);border:0;color:#fff;padding:7px 14px;border-radius:16px;font-size:14px;pointer-events:auto;cursor:pointer}
+.fseg.on{background:#fff;color:#000;font-weight:700}
+.yts{position:absolute;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);z-index:3;display:flex;gap:8px}
+.yts input{flex:1;min-width:0;padding:10px 14px;border-radius:20px;border:0;background:rgba(255,255,255,.2);color:#fff;font:inherit;font-size:15px;outline:0}
+.yts input::placeholder{color:rgba(255,255,255,.7)}.yts .ib{background:rgba(255,255,255,.2);color:#fff}
+.rlt{position:absolute;inset:0;background:#000 center/cover no-repeat;opacity:.9}
+.ytc{position:absolute;inset:0;pointer-events:none}.ytc iframe{width:100%;height:100%;border:0}
+.cb.sm{width:40px;height:40px;font-size:17px}
+.wtv.cover video{object-fit:cover}
+#wt.chrome-off .wth,#wt.chrome-off .wtc,#wt.chrome-off .wte{opacity:0;pointer-events:none}
+.wth,.wtc,.wte{transition:opacity .25s}
+@media (orientation:landscape){
+ .wth{position:absolute;top:0;left:0;right:0;z-index:4;background:linear-gradient(rgba(0,0,0,.65),transparent)}
+ .wtc{position:absolute;left:0;right:0;bottom:58px;z-index:4;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+ .wte{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:2px 0 8px}
+ .wte button{width:40px;height:40px;font-size:21px}
+}
+.ytcard{position:relative;margin:6px 0 2px;border-radius:14px;overflow:hidden;max-width:260px;background:#000}
+.ytcard img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;cursor:pointer}
+.ytpl{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-size:34px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.6);pointer-events:none}
+.ytbar{display:flex;gap:6px;padding:6px;background:rgba(0,0,0,.65)}
+.ytbar button{flex:1;border:0;border-radius:12px;background:rgba(255,255,255,.18);color:#fff;padding:6px 4px;font-size:13px;cursor:pointer}
+#bgfx .pt.conf{height:calc(var(--sz) * .5);background:var(--lc,#ff5e98);border-radius:2px}
+#bgfx .bfl{position:absolute;bottom:-10vh;left:var(--l);font-size:var(--sz);opacity:var(--o);animation:rise var(--d) linear infinite;will-change:transform}
+#bgfx .cloud{position:absolute;top:var(--t);left:-45%;width:var(--w);height:calc(var(--w) * .38);border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,255,255,.8),rgba(255,255,255,0) 70%);animation:drift var(--d) linear infinite;will-change:transform}
+#bgfx .cloud.fogc{background:radial-gradient(ellipse at center,rgba(255,255,255,.35),rgba(255,255,255,0) 70%)}
+@keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(220vw,0,0)}}
+#bgfx .meteor{position:absolute;top:var(--t);left:var(--l);width:var(--sz);height:2px;background:linear-gradient(90deg,rgba(255,255,255,0),#fff);opacity:0;animation:mt var(--d) linear infinite;will-change:transform,opacity}
+@keyframes mt{0%{opacity:0;transform:translate3d(0,0,0) rotate(35deg)}6%{opacity:1}28%{opacity:0;transform:translate3d(240px,170px,0) rotate(35deg)}100%{opacity:0;transform:translate3d(240px,170px,0) rotate(35deg)}}
 </style>
 </head>
 <body>
@@ -500,7 +529,8 @@ body.idle #bgfx *,body.idle .m.bob,body.idle .typ i,body.eco #bgfx *,body.eco .m
 </div>
 <div class="page hide" id="pg-feed">
 <div id="feed" class="muted"></div>
-<div class="ftop"><b>Lenta</b><span class="sp"></span><button class="ib" id="fup" title="Video yuklash">＋</button></div>
+<div class="ftop"><button class="fseg on" id="fm-our">Bizning</button><button class="fseg" id="fm-yt">YouTube</button><span class="sp"></span><button class="ib" id="fup" title="Qo‘shish">＋</button></div>
+<div class="yts hide" id="yts"><input id="yq" placeholder="YouTube’da qidirish…" autocomplete="off"><button class="ib" id="ygo" title="Qidirish">🔍</button><button class="ib" id="ykey" title="API kalit">🔑</button></div>
 <input type="file" id="reelf" accept="video/*" hidden>
 </div>
 <nav id="nav" class="glass">
@@ -557,7 +587,7 @@ body.idle #bgfx *,body.idle .m.bob,body.idle .typ i,body.eco #bgfx *,body.eco .m
 <div id="wt" class="hide">
 <div class="wth"><button class="ib" id="wtx">✕</button><b id="wtt">Birga ko‘ramiz</b><span id="wts"></span></div>
 <div class="wtv" id="wtv"></div>
-<div class="wtc"><button class="cb" id="wtp">▶</button><input type="range" id="wtr" min="0" max="1000" value="0"><span id="wtm">0:00</span></div>
+<div class="wtc"><button class="cb" id="wtp">▶</button><input type="range" id="wtr" min="0" max="1000" value="0"><span id="wtm">0:00</span><button class="cb sm" id="wtz" title="To‘ldirish">🔍</button><button class="cb sm" id="wtf" title="To‘liq ekran">⛶</button></div>
 <div class="wte" id="wte"><button data-e="❤️">❤️</button><button data-e="😂">😂</button><button data-e="😮">😮</button><button data-e="🔥">🔥</button><button data-e="👏">👏</button></div>
 </div>
 <div id="pop" class="hide"></div>
@@ -607,7 +637,7 @@ body.idle #bgfx *,body.idle .m.bob,body.idle .typ i,body.eco #bgfx *,body.eco .m
 </div>
 
 <script>
-const VER='v16';
+const VER='v17';
 const SB_URL='https://ilhxksrrfnxoomnaleyo.supabase.co';
 const SB_KEY='sb_publishable_BHVnn4xL-gpbRHYLWL7fkQ_sJFHcblM';
 const VAPID_PUB='BOsy5UXVVUvH3ZBiwB0cJv4NE18GIBHu8lnIp3zcR8qtoFQPWKe5pyWgWRmg-L8ZdzTYHcHw7mV-nerugF0fwpM';
@@ -836,6 +866,20 @@ const BGS=[
  ['berry','🫐 Rezavor',['#5b2a86','#9b3d9e','#e0527a']],
  ['night','🌃 Tungi shahar',['#0b132b','#1c2541','#3a506b']],
  ['amoled','⚫ Qora (AMOLED, batareyani tejaydi)',['#000000','#07070b','#12121c']],
+ ['confetti','🎊 Konfeti',['#fff0f6','#ffd1e8','#ffe38a']],
+ ['butterflies','🦋 Kapalaklar',['#e8f7ff','#bfe3ff','#cdb7ff']],
+ ['clouds','☁️ Bulutlar',['#d8ecff','#9ccfff','#5b9dff']],
+ ['fog','🌫 Tuman',['#c9d1d9','#8b98a5','#505c68']],
+ ['meteors','🌠 Yulduz yomg‘iri',['#050816','#101a40','#2a1b5e']],
+ ['oasisbg','🏝 Oazis',['#ffeab5','#f5b66a','#27b3a3']],
+ ['neon','🌆 Neon',['#13002b','#6a0f8e','#00c2d1']],
+ ['pastel','🍬 Pastel',['#ffe9f3','#e6e1ff','#d9f4ff']],
+ ['matcha','🍵 Matcha',['#eef6dc','#c4dd9b','#7fa650']],
+ ['ruby','♦️ Yoqut',['#4a0a1c','#9b1230','#e8456b']],
+ ['sunrise','🌅 Tong',['#ffe0c2','#ff9e7a','#c2549c']],
+ ['rose','🌹 Atirgul',['#ffe3ea','#ff9fb5','#d63d6a']],
+ ['coral','🪸 Marjon',['#ffe3dc','#ff9d8a','#e75a7c']],
+ ['mono','🩶 Kulrang',['#f2f2f4','#c9cbd1','#8e929c']],
  ['photo','🖼 O‘z rasmim',null]];
 let bgMode=LS.get('oasis_bgmode')||'grad';
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -852,12 +896,17 @@ function renderBg(bgMode,photo){
   if(bgMode==='love')addMany(fx,12,(e,i)=>{e.className='lv'+(i%3===0?' k':'');e.style.cssText='--l:'+rnd(0,92)+'%;--sz:'+rnd(18,52)+'px;--d:'+rnd(7,15)+'s;--x:'+rnd(-40,40)+'px;--o:'+rnd(.35,.8)+';animation-delay:-'+rnd(0,15)+'s'});
   if(bgMode==='sakura')addMany(fx,12,e=>{e.className='pt petal';e.style.cssText='--l:'+rnd(0,96)+'%;--sz:'+rnd(12,24)+'px;--d:'+rnd(9,17)+'s;--x:'+rnd(-90,90)+'px;--r:'+rnd(300,700)+'deg;--o:'+rnd(.5,.9)+';animation-delay:-'+rnd(0,17)+'s'});
   if(bgMode==='snow')addMany(fx,16,e=>{e.className='pt snowf';e.style.cssText='--l:'+rnd(0,98)+'%;--sz:'+rnd(11,30)+'px;--d:'+rnd(9,18)+'s;--x:'+rnd(-60,60)+'px;--r:'+rnd(-420,420)+'deg;--o:'+rnd(.55,.95)+';animation-delay:-'+rnd(0,18)+'s'});
+  if(bgMode==='confetti')addMany(fx,18,e=>{e.className='pt conf';e.style.cssText='--l:'+rnd(0,98)+'%;--sz:'+rnd(6,12)+'px;--d:'+rnd(6,12)+'s;--x:'+rnd(-70,70)+'px;--r:'+rnd(300,900)+'deg;--o:'+rnd(.7,1)+';--lc:'+['#ff5e98','#ffd166','#06d6a0','#4cc9f0','#a78bfa'][Math.floor(rnd(0,5))]+';animation-delay:-'+rnd(0,12)+'s'});
+  if(bgMode==='butterflies')addMany(fx,8,e=>{e.className='bfl';e.textContent='🦋';e.style.cssText='--l:'+rnd(0,92)+'%;--sz:'+rnd(22,40)+'px;--d:'+rnd(11,20)+'s;--x:'+rnd(-90,90)+'px;--o:'+rnd(.6,.95)+';animation-delay:-'+rnd(0,20)+'s'});
+  if(bgMode==='clouds')addMany(fx,5,e=>{e.className='cloud';e.style.cssText='--t:'+rnd(2,70)+'%;--w:'+rnd(220,420)+'px;--d:'+rnd(40,80)+'s;animation-delay:-'+rnd(0,60)+'s'});
+  if(bgMode==='fog')addMany(fx,4,e=>{e.className='cloud fogc';e.style.cssText='--t:'+rnd(10,75)+'%;--w:'+rnd(380,620)+'px;--d:'+rnd(60,110)+'s;animation-delay:-'+rnd(0,90)+'s'});
+  if(bgMode==='meteors')addMany(fx,5,e=>{e.className='meteor';e.style.cssText='--l:'+rnd(5,70)+'%;--t:'+rnd(2,40)+'%;--sz:'+rnd(70,140)+'px;--d:'+rnd(5,10)+'s;animation-delay:-'+rnd(0,10)+'s'});
   if(bgMode==='rain')addMany(fx,22,e=>{e.className='pt rain';e.style.cssText='--l:'+rnd(0,100)+'%;--sz:'+rnd(14,30)+'px;--d:'+rnd(.9,1.8)+'s;--x:'+rnd(-14,-4)+'px;--r:0deg;--o:'+rnd(.25,.6)+';animation-delay:-'+rnd(0,2)+'s'});
   if(bgMode==='leaves')addMany(fx,12,e=>{e.className='pt leaf';e.style.cssText='--l:'+rnd(0,96)+'%;--sz:'+rnd(14,26)+'px;--d:'+rnd(8,15)+'s;--x:'+rnd(-110,110)+'px;--r:'+rnd(300,720)+'deg;--o:'+rnd(.6,.95)+';--lc:'+['#e8903a','#d9622b','#f2c14e','#b5532b'][Math.floor(rnd(0,4))]+';animation-delay:-'+rnd(0,15)+'s'});
   if(bgMode==='bubbles')addMany(fx,12,e=>{e.className='bub';e.style.cssText='--l:'+rnd(0,92)+'%;--sz:'+rnd(16,56)+'px;--d:'+rnd(8,16)+'s;--x:'+rnd(-40,40)+'px;--o:'+rnd(.45,.9)+';animation-delay:-'+rnd(0,16)+'s'});
   if(bgMode==='fire')addMany(fx,16,e=>{e.className='spark';e.style.cssText='--l:'+rnd(0,96)+'%;--sz:'+rnd(4,12)+'px;--d:'+rnd(4,9)+'s;--x:'+rnd(-50,50)+'px;--o:'+rnd(.55,1)+';animation-delay:-'+rnd(0,9)+'s'});
   if(bgMode==='fireflies')addMany(fx,14,e=>{e.className='ffly';e.style.cssText='--l:'+rnd(0,96)+'%;--t:'+rnd(10,92)+'%;--sz:'+rnd(3,7)+'px;--d:'+rnd(3,7)+'s;--x:'+rnd(-16,16)+'px;animation-delay:-'+rnd(0,7)+'s'});
-  if(bgMode==='stars'||bgMode==='galaxy'){addMany(fx,24,e=>{e.className='star';e.style.cssText='--l:'+rnd(0,98)+'%;--t:'+rnd(0,75)+'%;--sz:'+rnd(2,5)+'px;--d:'+rnd(2,6)+'s;animation-delay:-'+rnd(0,6)+'s'});const m=div('moon','🌙');fx.appendChild(m)}
+  if(bgMode==='stars'||bgMode==='galaxy'||bgMode==='meteors'){addMany(fx,24,e=>{e.className='star';e.style.cssText='--l:'+rnd(0,98)+'%;--t:'+rnd(0,75)+'%;--sz:'+rnd(2,5)+'px;--d:'+rnd(2,6)+'s;animation-delay:-'+rnd(0,6)+'s'});const m=div('moon','🌙');fx.appendChild(m)}
 }
 function setBgMode(m){bgMode=m;LS.set('oasis_bgmode',m);applyBg()}
 let bgScope='global',lastBgKey='';
@@ -1184,7 +1233,7 @@ $('s-pin').onclick=()=>{if(LS.get('oasis_pin'))lockShow('off','O‘chirish uchun
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')hiddenAt=Date.now();
   else if(LS.get('oasis_pin')&&hiddenAt&&Date.now()-hiddenAt>20000&&$('lock').classList.contains('hide'))lockShow('check','PIN kodni kiriting',false)});
 $('s-new').onclick=()=>{const p=$('pop');p.textContent='';const c=div('pcard');c.appendChild(div('sn','Yangiliklar · '+VER));
-  ['🎬 Lenta (Reels): video yuklang, yurakcha bosing, izoh yozing, chatga yuboring','🍿 Birga video ko‘rish: chatda ⋮ → Birga video ko‘rish (YouTube yoki Lenta/chat videosi)','🔄 Yangi versiya chiqsa, ilova o‘zi xabar beradi','⚡ Tezroq va sovuqroq ishlash, 20+ yangi fon','⭐ Sevimli xabarlar · 📍 joylashuv · 📊 statistika · 💾 saqlash'].forEach(t=>c.appendChild(div('pa',t)));
+  ['▶️ Lentada YouTube: “YouTube” tabi (API kalit kerak) yoki ＋ bilan havola qo‘shing','🍿 Birga ko‘rishda: ⛶ to‘liq ekran (yotiq), 🔍 to‘ldirish, ekranga bosib tugmalarni yashirish','▶ Chatdagi YouTube havolalari ko‘rinadigan kartochka bo‘lib chiqadi','🌈 14 ta yangi fon (jami 40 ta)','🎬 Lenta va 🍿 birga ko‘rish','⚡ Tezroq va sovuqroq ishlash'].forEach(t=>c.appendChild(div('pa',t)));
   const x=document.createElement('button');x.className='pa';x.textContent='Yopish';x.onclick=closePop;c.appendChild(x);p.appendChild(c);p._t=Date.now();p.classList.remove('hide')};
 function getPins(){try{return JSON.parse(LS.get('oasis_pins')||'[]')}catch(e){return[]}}
 function chatMenu(c){buzz(15);const p=$('pop');p.textContent='';const card=div('pcard');card.appendChild(div('sn',disp(c).title));
@@ -1404,7 +1453,7 @@ function fill(el,m){
       else if(m.media_kind==='audio')el.appendChild(voiceEl(m))}
     if(m.body){const bt=cleanBody(m.body);if(bt){const eo=(!m.reply_to&&!m.media_path)?emojiOnly(bt):null;
       if(eo){const n=eo.length,t=div('t emo'+(n>10?' sm':''));t.style.setProperty('--es',(n===1?128:n===2?104:n===3?90:n<=5?72:n<=8?58:n<=10?50:30)+'px');if(n<=10)el.classList.add('jumbo');eo.slice(0,150).forEach(ch=>t.appendChild(peNode(ch,true,n<=10)));el.appendChild(t)}
-      else{const t=div('t');rich(t,bt,true);el.appendChild(t)}}}
+      else{const t=div('t');rich(t,bt,true);el.appendChild(t);const yid=ytId(bt);if(yid)el.appendChild(ytCard(yid))}}}
   }
   const s=div('ts');if(m.edited_at&&!m.deleted)s.appendChild(div('','tahrirlangan'));s.appendChild(div('',fmt(m.created_at)));
   if(mine){const k=document.createElement('span');k.className='tk'+(m.read_at?' rd':'');s.appendChild(k)}
@@ -1782,8 +1831,8 @@ $('flip').onclick=async()=>{
 /* ---------- LENTA (Reels) ---------- */
 let reels=[],rLikes={},rCmts={},feedMuted=true,feedLoaded=false,feedEnd=false,feedBusy=false,feedIO=null,cmReel=null;
 const feedEls=new Map();
-function feedOpen(){const f=$('feed');if(!feedLoaded){feedLoaded=true;f.appendChild(div('fempty','Yuklanmoqda…'));loadFeed(false)}else setupFeedIO()}
-function stopFeed(){document.querySelectorAll('#feed video').forEach(v=>{try{v.pause()}catch(e){}})}
+function feedOpen(){const f=$('feed');if(feedMode==='yt'){setupFeedIO();return}if(!feedLoaded){feedLoaded=true;f.appendChild(div('fempty','Yuklanmoqda…'));loadFeed(false)}else setupFeedIO()}
+function stopFeed(){document.querySelectorAll('#feed video').forEach(v=>{try{v.pause()}catch(e){}});document.querySelectorAll('#feed .rl.yt').forEach(x=>destroyYT(x))}
 async function loadFeed(more){
   if(feedBusy||(more&&feedEnd))return;feedBusy=true;
   let q=sb.from('reels').select('*').order('id',{ascending:false}).limit(12);if(more&&reels.length)q=q.lt('id',reels[reels.length-1].id);
@@ -1807,25 +1856,27 @@ function renderFeedAll(){const f=$('feed');f.textContent='';feedEls.clear();
   reels.forEach(r=>f.appendChild(buildReel(r)));setupFeedIO()}
 function buildReel(r){
   const el=div('rl');el.dataset.id=r.id;feedEls.set(r.id,el);
-  const v=document.createElement('video');v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.muted=feedMuted;v.preload='none';el.appendChild(v);el._v=v;
+  if(r.yt){el.classList.add('yt');el._yt=r.yt;const th=div('rlt');th.style.backgroundImage='url(https://i.ytimg.com/vi/'+r.yt+'/hqdefault.jpg)';el.appendChild(th);el.appendChild(div('ytc'))}
+  else{const v=document.createElement('video');v.loop=true;v.playsInline=true;v.setAttribute('playsinline','');v.muted=feedMuted;v.preload='none';el.appendChild(v);el._v=v}
   const ov=div('rlo'),info=div('rli'),au=div('rla');const pr=profiles.get(r.user_id)||{};
   const av=avNode(pr.avatar,initial(pr.name));av.style.cssText='width:34px;height:34px;font-size:15px';au.appendChild(av);au.appendChild(document.createTextNode(r.user_id===me.id?'Siz':pName(r.user_id)));info.appendChild(au);
   if(r.caption)info.appendChild(div('rlc',r.caption));
   const bt=div('rlb');
   const rb=(ic,t,f)=>{const b=document.createElement('button');b.className='rlbtn';const sp=document.createElement('span');sp.textContent=ic;const n=document.createElement('i');n.style.fontStyle='normal';n.textContent=t;b.append(sp,n);b.onclick=e=>{e.stopPropagation();f()};return b};
   el._lk=rb('🤍','0',()=>likeReel(r,false,null));el._cm=rb('💬','0',()=>openComments(r));
-  bt.append(el._lk,el._cm,rb('↗','Yubor',()=>forwardMsgs([{id:0,sender:r.user_id,body:r.caption||null,media_path:r.path,media_kind:'video',dur:null,deleted:false,fwd_from:null}])));
+  bt.append(el._lk,el._cm,rb('↗','Yubor',()=>shareReel(r)));
   if(r.user_id===me.id)bt.appendChild(rb('🗑','Sil',async()=>{if(!confirm('Videoni o‘chirasizmi?'))return;
     const {error}=await sb.from('reels').delete().eq('id',r.id);if(error){toast('Xato: '+error.message);return}
-    sb.storage.from('media').remove([r.path]).then(()=>{},()=>{});reels=reels.filter(x=>x.id!==r.id);renderFeedAll()}));
+    if(r.path)sb.storage.from('media').remove([r.path]).then(()=>{},()=>{});reels=reels.filter(x=>x.id!==r.id);renderFeedAll()}));
   ov.append(info,bt);el.appendChild(ov);el.appendChild(div('rlp','⏸'));el.appendChild(div('rlm','🔇 Ovozni yoqish uchun bosing'));
   let lastT=0,tt=null;
   el.addEventListener('click',e=>{if(e.target.closest('.rlbtn,.rli'))return;const now=Date.now();
     if(now-lastT<300){clearTimeout(tt);lastT=0;likeReel(r,true,el)}
-    else{lastT=now;tt=setTimeout(()=>{if(feedMuted){feedMuted=false;$('feed').classList.remove('muted');document.querySelectorAll('#feed video').forEach(x=>x.muted=false)}else togglePlay(el)},300)}});
+    else{lastT=now;tt=setTimeout(()=>{if(feedMuted){feedMuted=false;$('feed').classList.remove('muted');document.querySelectorAll('#feed video').forEach(x=>x.muted=false);document.querySelectorAll('#feed .rl.yt').forEach(x=>{try{if(x._ytp)x._ytp.unMute()}catch(e){}})}else togglePlay(el)},300)}});
   updReelBtns(r.id);return el;
 }
-function togglePlay(el){const v=el._v;if(!v)return;if(v.paused){v.play().catch(()=>{});el.classList.remove('rpaused')}else{v.pause();el.classList.add('rpaused')}}
+function togglePlay(el){if(el._yt){const pl=el._ytp;if(!pl||!pl.getPlayerState)return;if(pl.getPlayerState()===1){pl.pauseVideo();el.classList.add('rpaused')}else{pl.playVideo();el.classList.remove('rpaused')}return}
+  const v=el._v;if(!v)return;if(v.paused){v.play().catch(()=>{});el.classList.remove('rpaused')}else{v.pause();el.classList.add('rpaused')}}
 function updReelBtns(id){const el=feedEls.get(id);if(!el)return;const o=rLikes[id]||{n:0,mine:false};el._lk.firstChild.textContent=o.mine?'❤️':'🤍';el._lk.lastChild.textContent=o.n;el._cm.lastChild.textContent=rCmts[id]||0}
 async function likeReel(r,onlyAdd,el){const o=rLikes[r.id]||(rLikes[r.id]={n:0,mine:false});
   if(el){const h=div('rlh','❤️');el.appendChild(h);h.addEventListener('animationend',()=>h.remove());buzz(12)}
@@ -1834,16 +1885,25 @@ async function likeReel(r,onlyAdd,el){const o=rLikes[r.id]||(rLikes[r.id]={n:0,m
   const res=want?await sb.from('reel_likes').insert({reel_id:r.id}):await sb.from('reel_likes').delete().eq('reel_id',r.id).eq('user_id',me.id);
   if(res.error){o.mine=!want;o.n=Math.max(0,o.n+(want?-1:1));updReelBtns(r.id);toast('Xato: '+res.error.message)}}
 function setupFeedIO(){if(feedIO)feedIO.disconnect();
-  feedIO=new IntersectionObserver(es=>es.forEach(e=>{const el=e.target;if(e.isIntersecting&&e.intersectionRatio>=.6)activateReel(el);else if(!e.isIntersecting||e.intersectionRatio<.3){const v=el._v;if(v)try{v.pause()}catch(x){}}}),{root:$('feed'),threshold:[0,.3,.6,.9]});
+  feedIO=new IntersectionObserver(es=>es.forEach(e=>{const el=e.target;if(e.isIntersecting&&e.intersectionRatio>=.6)activateReel(el);else if(!e.isIntersecting||e.intersectionRatio<.3)deactivateReel(el)}),{root:$('feed'),threshold:[0,.3,.6,.9]});
   $('feed').querySelectorAll('.rl').forEach(x=>feedIO.observe(x))}
-async function activateReel(el){const r=reels.find(x=>x.id===+el.dataset.id),v=el._v;if(!r||!v)return;
-  if(!v.src){const u=await mediaUrl(r.path);if(!u)return;v.src=u}
-  v.muted=feedMuted;el.classList.remove('rpaused');try{await v.play()}catch(e){}
+function deactivateReel(el){if(el._yt){destroyYT(el);return}const v=el._v;if(v)try{v.pause()}catch(x){}}
+async function activateReel(el){
   const all=Array.from($('feed').querySelectorAll('.rl')),idx=all.indexOf(el);
+  if(el._yt){activateYT(el,el._yt)}
+  else{const r=reels.find(x=>x.id===+el.dataset.id),v=el._v;if(!r||!v||!r.path)return;
+    if(!v.src){const u=await mediaUrl(r.path);if(!u)return;v.src=u}
+    v.muted=feedMuted;el.classList.remove('rpaused');try{await v.play()}catch(e){}}
   all.forEach((x,i)=>{if(Math.abs(i-idx)>2&&x._v&&x._v.getAttribute('src')){x._v.removeAttribute('src');x._v.load()}});
-  const nx=el.nextElementSibling;if(nx&&nx._v&&!nx._v.getAttribute('src')){const rr=reels.find(x=>x.id===+nx.dataset.id);if(rr)mediaUrl(rr.path).then(u=>{if(u&&!nx._v.getAttribute('src')){nx._v.preload='metadata';nx._v.src=u}})}
-  if(idx>=all.length-2)loadFeed(true)}
-$('fup').onclick=()=>$('reelf').click();
+  const nx=el.nextElementSibling;if(nx&&nx._v&&!nx._v.getAttribute('src')){const rr=reels.find(x=>x.id===+nx.dataset.id);if(rr&&rr.path)mediaUrl(rr.path).then(u=>{if(u&&!nx._v.getAttribute('src')){nx._v.preload='metadata';nx._v.src=u}})}
+  if(idx>=all.length-2)feedMore()}
+$('fup').onclick=()=>{const p=$('pop');p.textContent='';const c=div('pcard');c.appendChild(div('sn','＋ Lentaga qo‘shish'));
+  const add=(t,f)=>{const b=document.createElement('button');b.className='pa';b.textContent=t;b.onclick=()=>{closePop();f()};c.appendChild(b)};
+  add('📤 Videoni telefondan yuklash',()=>$('reelf').click());
+  add('▶️ YouTube havolasini qo‘shish',async()=>{const u=(prompt('YouTube havolasini kiriting:')||'').trim();if(!u)return;const id=ytId(u);if(!id){toast('Havola noto‘g‘ri');return}
+    let title='';try{const r=await fetch('https://www.youtube.com/oembed?format=json&url='+encodeURIComponent('https://youtu.be/'+id));if(r.ok){const j=await r.json();title=j.title||''}}catch(e){}
+    if(!title)title=(prompt('Izoh (ixtiyoriy):')||'').trim();addYtToFeed(id,title)});
+  p.appendChild(c);p._t=Date.now();p.classList.remove('hide')};
 $('reelf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
   if(!f.type.startsWith('video/')){toast('Faqat video fayl tanlang');return}
   if(f.size>50*1024*1024){alert('Video 50 MB dan kichik bo‘lishi kerak');return}
@@ -1869,11 +1929,11 @@ $('cmsend').onclick=async()=>{const t=$('cmin').value.trim();if(!t||!cmReel)retu
 $('cmin').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('cmsend').onclick()}});
 $('cmx').onclick=()=>$('cmt').classList.add('hide');
 $('cmt').addEventListener('click',e=>{if(e.target===$('cmt'))$('cmt').classList.add('hide')});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')stopFeed()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')stopFeed();else if(!$('pg-feed').classList.contains('hide'))setupFeedIO()});
 
 /* ---------- BIRGA KO'RISH ---------- */
 let wt=null,ytP=null;
-function wtSend(o){if(!live||!wt)return;try{live.send({type:'broadcast',event:'wt',payload:Object.assign({c:wt.c,u:me.id},o)})}catch(e){}}
+function wtSend(o){if(!live||!wt||wt.solo)return;try{live.send({type:'broadcast',event:'wt',payload:Object.assign({c:wt.c,u:me.id},o)})}catch(e){}}
 function wtSendTo(c,o){try{if(live)live.send({type:'broadcast',event:'wt',payload:Object.assign({c,u:me.id},o)})}catch(e){}}
 function ytId(u){const m=/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/))([\w-]{11})/.exec(u||'');return m?m[1]:null}
 function loadYT(){if(window.YT&&window.YT.Player)return Promise.resolve();if(ytP)return ytP;
@@ -1899,9 +1959,9 @@ function invite(p){const pp=$('pop');pp.textContent='';const c=div('pcard');c.ap
   const y=document.createElement('button');y.className='pa';y.textContent='✅ Qo‘shilish';y.onclick=()=>{closePop();startWT(p.c,p.kind,p.ref,false,p.title)};
   const n=document.createElement('button');n.className='pa';n.textContent='Rad etish';n.onclick=()=>{closePop();wtSendTo(p.c,{t:'close',why:'rad'})};
   c.append(y,n);pp.appendChild(c);pp._t=Date.now();pp.classList.remove('hide');buzz(40);recvSound()}
-async function startWT(c,kind,ref,host,title){
-  if(wt)closeWT(false);wt={c,kind,ref,host,title,p:null,timer:null,tick:0,drag:false,intent:false};
-  $('wt').classList.remove('hide');$('wtt').textContent='🍿 '+(title||'Birga ko‘ramiz');$('wts').textContent=host?'Siz boshladingiz':'Qo‘shildingiz';
+async function startWT(c,kind,ref,host,title,solo){
+  stopFeed();if(wt)closeWT(false);wt={c,kind,ref,host,title,p:null,timer:null,tick:0,drag:false,intent:false,solo:!!solo};$('wt').classList.remove('chrome-off');$('wtv').classList.remove('cover');
+  $('wt').classList.remove('hide');$('wtt').textContent='🍿 '+(title||'Birga ko‘ramiz');$('wts').textContent=solo?'Yakka ko‘rish':host?'Siz boshladingiz':'Qo‘shildingiz';
   const box=$('wtv');box.textContent='';$('wtp').textContent='▶';$('wtr').value=0;$('wtm').textContent='0:00';
   try{
     if(kind==='file'){const u=await mediaUrl(ref);if(!u)throw new Error('Video topilmadi');
@@ -1913,7 +1973,7 @@ async function startWT(c,kind,ref,host,title){
         wt.yt=pl;wt.p={isPlaying:()=>!!(pl.getPlayerState&&pl.getPlayerState()===1),time:()=>pl.getCurrentTime?pl.getCurrentTime():0,dur:()=>pl.getDuration?pl.getDuration():0,play:()=>pl.playVideo(),pause:()=>pl.pauseVideo(),seek:t=>pl.seekTo(t,true)}})}
   }catch(e){alert('Xato: '+(e.message||e));closeWT(true);return}
   wt.timer=setInterval(wtTick,1000);
-  if(host){wtSend({t:'open',kind,ref,title});toast('Taklif yuborildi. Sherigingiz qo‘shilishini kuting…')}else wtSend({t:'hello'});
+  if(solo){}else if(host){wtSend({t:'open',kind,ref,title});toast('Taklif yuborildi. Sherigingiz qo‘shilishini kuting…')}else wtSend({t:'hello'});
 }
 function fmtT(t){t=Math.max(0,Math.floor(t||0));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')}
 function wtTick(){if(!wt||!wt.p)return;const pl=wt.p,d=pl.dur(),t=pl.time();
@@ -1934,12 +1994,87 @@ function onWT(p){if(!p||p.u===me.id||!chatById(p.c))return;
   if(p.t==='close'){toast(p.why==='rad'?'Sherigingiz hozir ko‘ra olmaydi':'Sherigingiz ko‘rishni tugatdi');closeWT(false)}}
 function closeWT(notify){if(wt){clearInterval(wt.timer);if(notify)wtSend({t:'close'});if(wt.yt){try{wt.yt.destroy()}catch(e){}}wt=null}
   $('wtv').textContent='';$('wt').classList.add('hide')}
-$('wtx').onclick=()=>closeWT(true);
+$('wtx').onclick=()=>{if(document.fullscreenElement){try{document.exitFullscreen()}catch(e){}}closeWT(true)};
+$('wtf').onclick=async()=>{const el=$('wt');try{if(document.fullscreenElement){await document.exitFullscreen()}else{await el.requestFullscreen();try{await screen.orientation.lock('landscape')}catch(e){}}}catch(e){toast('To‘liq ekran bu telefonda ishlamadi')}};
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement){try{screen.orientation.unlock()}catch(e){}}});
+$('wtz').onclick=()=>{const v=$('wtv'),on=v.classList.toggle('cover');
+  if(wt&&wt.yt){const f=v.querySelector('iframe');if(f){if(on){const h=v.clientHeight;f.style.cssText='position:absolute;left:50%;top:50%;width:'+Math.round(h*16/9)+'px;height:'+h+'px;transform:translate(-50%,-50%);border:0;pointer-events:none'}else f.style.cssText=''}}
+  toast(on?'To‘ldirish: ekranni qoplaydi':'Asl nisbat')};
+$('wtv').onclick=()=>$('wt').classList.toggle('chrome-off');
 $('wtp').onclick=()=>{if(!wt||!wt.p)return;const pl=wt.p,want=!pl.isPlaying();if(want)pl.play();else pl.pause();
   wtSend({t:'ctl',playing:want,time:pl.time()});$('wtp').textContent=want?'⏸':'▶'};
 $('wtr').addEventListener('input',()=>{if(wt)wt.drag=true});
 $('wtr').addEventListener('change',()=>{if(!wt||!wt.p)return;const d=wt.p.dur();wt.drag=false;if(!d)return;const t=$('wtr').value/1000*d;wt.p.seek(t);wtSend({t:'ctl',playing:wt.p.isPlaying(),time:t})});
 $('wte').querySelectorAll('button').forEach(b=>b.onclick=()=>{const e=b.dataset.e;floatEmoji(e);wtSend({t:'react',e})});
+
+/* ---------- YouTube Lentada ---------- */
+const YT_KEY_DEFAULT='';
+let feedMode='our',ytItems=[],ytQuery='',ytNext='',ytBusy=false;
+const ytKey=()=>LS.get('oasis_ytkey')||YT_KEY_DEFAULT;
+function feedMore(){if(feedMode==='yt'){if(ytNext)ytLoad(false)}else loadFeed(true)}
+$('fm-our').onclick=()=>setFeedMode('our');$('fm-yt').onclick=()=>setFeedMode('yt');
+function setFeedMode(m){if(feedMode===m)return;stopFeed();feedMode=m;
+  $('fm-our').classList.toggle('on',m==='our');$('fm-yt').classList.toggle('on',m==='yt');$('yts').classList.toggle('hide',m!=='yt');
+  if(m==='our'){if(feedLoaded)renderFeedAll();else feedOpen()}else ytOpen()}
+function ytOpen(){const f=$('feed');f.textContent='';ytItems=[];ytNext='';if(!ytKey()){f.appendChild(keyCard(''));return}ytLoad(true)}
+function askYtKey(){const k=(prompt('YouTube API kalitini kiriting (bo‘sh qoldirsangiz o‘chiriladi):',LS.get('oasis_ytkey')||'')||'').trim();if(k)LS.set('oasis_ytkey',k);else LS.del('oasis_ytkey');if(feedMode==='yt')ytOpen()}
+$('ykey').onclick=askYtKey;
+$('ygo').onclick=()=>{ytQuery=$('yq').value.trim();ytNext='';stopFeed();ytLoad(true)};
+$('yq').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('ygo').onclick()}});
+function keyCard(msg){const w=div('fempty'),i=div('');i.style.maxWidth='330px';const t=div('');t.style.cssText='white-space:pre-line;font-size:14px;line-height:1.5;margin-bottom:14px;text-align:left';
+  t.textContent=(msg?msg+'\n\n':'')+'YouTube videolarini ko‘rish uchun bepul API kalit kerak:\n1) console.cloud.google.com → yangi loyiha\n2) “YouTube Data API v3” ni yoqing\n3) Credentials → Create API key\n4) Kalitni “HTTP referrers” bilan cheklang: https://prpuzb-star.github.io/*\n5) Kalitni pastdagi tugma bilan kiriting';
+  const b=document.createElement('button');b.className='fseg on';b.textContent='🔑 Kalitni kiritish';b.onclick=askYtKey;i.append(t,b);w.appendChild(i);return w}
+async function ytLoad(first){
+  if(ytBusy)return;const key=ytKey();if(!key)return;ytBusy=true;const q=ytQuery;
+  const url=q?'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=20&videoDuration=short&q='+encodeURIComponent(q)+'&key='+encodeURIComponent(key)+(ytNext?'&pageToken='+ytNext:'')
+    :'https://www.googleapis.com/youtube/v3/videos?part=snippet,status&chart=mostPopular&regionCode=UZ&maxResults=20&key='+encodeURIComponent(key)+(ytNext?'&pageToken='+ytNext:'');
+  try{const r=await fetch(url),j=await r.json();ytBusy=false;
+    if(j.error){const f=$('feed');f.textContent='';f.appendChild(keyCard('Xato: '+(j.error.message||'noma’lum')));return}
+    ytNext=j.nextPageToken||'';
+    const items=(j.items||[]).map(it=>q?{id:it.id&&it.id.videoId,title:it.snippet.title,ch:it.snippet.channelTitle}:{id:it.id,title:it.snippet.title,ch:it.snippet.channelTitle,emb:!(it.status&&it.status.embeddable===false)}).filter(x=>x.id&&x.emb!==false);
+    const f=$('feed');if(first){f.textContent='';ytItems=[]}
+    items.forEach(it=>{ytItems.push(it);f.appendChild(buildYtApi(it))});
+    if(!ytItems.length)f.appendChild(div('fempty','Hech narsa topilmadi'));
+    setupFeedIO()}
+  catch(e){ytBusy=false;toast('YouTube xatosi: '+(e.message||e))}}
+function pickDM(cb){const dms=chats.filter(c=>c.kind==='dm');if(!dms.length){toast('Shaxsiy chat topilmadi');return}if(dms.length===1){cb(dms[0]);return}
+  const p=$('pop');p.textContent='';const c=div('pcard');c.appendChild(div('sn','Kim bilan?'));
+  dms.forEach(d=>{const b=document.createElement('button');b.className='pa';b.textContent=disp(d).title;b.onclick=()=>{closePop();cb(d)};c.appendChild(b)});
+  p.appendChild(c);p._t=Date.now();p.classList.remove('hide')}
+function shareReel(r){if(r.yt)forwardMsgs([{id:0,sender:r.user_id,body:'https://youtu.be/'+r.yt,media_path:null,media_kind:null,dur:null,deleted:false,fwd_from:null}]);
+  else forwardMsgs([{id:0,sender:r.user_id,body:r.caption||null,media_path:r.path,media_kind:'video',dur:null,deleted:false,fwd_from:null}])}
+async function addYtToFeed(id,title){if(reels.some(r=>r.yt===id)){toast('Bu video lentada bor');return}
+  const {data,error}=await sb.from('reels').insert({yt:id,caption:title?String(title).slice(0,300):null}).select().single();
+  if(error){alert('Xato: '+error.message+'\n(Supabase’da yangi SQL ishga tushirilganmi?)');return}
+  reels.unshift(data);rLikes[data.id]={n:0,mine:false};rCmts[data.id]=0;if(feedMode==='our')renderFeedAll();toast('Lentaga qo‘shildi ✅')}
+function buildYtApi(it){
+  const el=div('rl yt');el._yt=it.id;
+  const th=div('rlt');th.style.backgroundImage='url(https://i.ytimg.com/vi/'+it.id+'/hqdefault.jpg)';el.appendChild(th);el.appendChild(div('ytc'));
+  const ov=div('rlo'),info=div('rli');if(it.ch)info.appendChild(div('rla','▶ '+it.ch));if(it.title)info.appendChild(div('rlc',it.title));
+  const bt=div('rlb');
+  const rb=(ic,t,f)=>{const b=document.createElement('button');b.className='rlbtn';const sp=document.createElement('span');sp.textContent=ic;const n=document.createElement('i');n.style.fontStyle='normal';n.textContent=t;b.append(sp,n);b.onclick=e=>{e.stopPropagation();f()};return b};
+  bt.append(rb('➕','Lentaga',()=>addYtToFeed(it.id,it.title)),rb('↗','Yubor',()=>forwardMsgs([{id:0,sender:me.id,body:'https://youtu.be/'+it.id,media_path:null,media_kind:null,dur:null,deleted:false,fwd_from:null}])),
+    rb('🍿','Birga',()=>pickDM(c=>startWT(c.id,'yt',it.id,true,'YouTube'))));
+  ov.append(info,bt);el.appendChild(ov);el.appendChild(div('rlp','⏸'));el.appendChild(div('rlm','🔇 Ovozni yoqish uchun bosing'));
+  let lastT=0,tt=null;
+  el.addEventListener('click',e=>{if(e.target.closest('.rlbtn,.rli'))return;const now=Date.now();
+    if(now-lastT<300){clearTimeout(tt);lastT=0;addYtToFeed(it.id,it.title)}
+    else{lastT=now;tt=setTimeout(()=>{if(feedMuted){feedMuted=false;$('feed').classList.remove('muted');document.querySelectorAll('#feed video').forEach(x=>x.muted=false);document.querySelectorAll('#feed .rl.yt').forEach(x=>{try{if(x._ytp)x._ytp.unMute()}catch(e){}})}else togglePlay(el)},300)}});
+  return el}
+async function activateYT(el,id){
+  if(el._ytp||el._ytBusy)return;el._ytBusy=true;
+  try{await loadYT()}catch(e){el._ytBusy=false;toast(e.message||'YouTube yuklanmadi');return}
+  if(!el.isConnected){el._ytBusy=false;return}
+  document.querySelectorAll('#feed .rl.yt').forEach(x=>{if(x!==el)destroyYT(x)});
+  const c=el.querySelector('.ytc');if(!c){el._ytBusy=false;return}c.textContent='';const d=document.createElement('div');d.id='yp'+Math.random().toString(36).slice(2);c.appendChild(d);
+  try{el._ytp=new YT.Player(d.id,{width:'100%',height:'100%',videoId:id,playerVars:{autoplay:1,mute:1,controls:0,playsinline:1,rel:0,modestbranding:1,loop:1,playlist:id,fs:0,disablekb:1,iv_load_policy:3},
+    events:{onReady:e=>{if(feedMuted)e.target.mute();else e.target.unMute();e.target.playVideo()},onError:()=>{toast('Bu video bu yerda ochilmadi');destroyYT(el)}}})}catch(e){}
+  el._ytBusy=false;el.classList.remove('rpaused')}
+function destroyYT(el){if(el._ytp){try{el._ytp.destroy()}catch(e){}el._ytp=null}const c=el.querySelector&&el.querySelector('.ytc');if(c)c.textContent=''}
+function ytCard(id){const c=div('ytcard'),im=document.createElement('img');im.loading='lazy';im.alt='';im.src='https://i.ytimg.com/vi/'+id+'/mqdefault.jpg';c.appendChild(im);c.appendChild(div('ytpl','▶'));
+  const bar=div('ytbar'),b1=document.createElement('button');b1.textContent='▶ Ko‘rish';b1.onclick=e=>{e.stopPropagation();startWT(cur,'yt',id,false,'YouTube',true)};
+  const b2=document.createElement('button');b2.textContent='🍿 Birga';b2.onclick=e=>{e.stopPropagation();const ch=chatById(cur);if(ch&&ch.kind==='dm')startWT(cur,'yt',id,true,'YouTube');else toast('Birga ko‘rish shaxsiy chatda ishlaydi')};
+  bar.append(b1,b2);c.appendChild(bar);im.onclick=e=>{e.stopPropagation();startWT(cur,'yt',id,false,'YouTube',true)};return c}
 
 boot();
 </script>
